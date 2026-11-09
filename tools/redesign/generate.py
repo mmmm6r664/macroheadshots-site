@@ -71,7 +71,17 @@ ADDRESS = "195 US-46, Suite 9, Totowa, New Jersey 07512"
 MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Macro+Headshots+195+US-46+Totowa+NJ&query_place_id=ChIJBQf90R9ZwokR1-oGndIZRCA"
 FB, IG_URL = "https://www.facebook.com/MacroHeadshots", "https://instagram.com/macroheadshots"
 FORM_ID = "F39Doj60gH02JaLUfmFP"
-ELFSIGHT = "elfsight-app-c65230f6-0f81-4d8a-9478-d76339342fc4"
+REVIEWS = [
+    ("Courtney R.", "Great work! They get you in and out quickly and the turnaround for headshots was within 24 hours"),
+    ("Vanessa B.", "First time getting professional headshots and I was nervous. The photographer was really helpful. Suggested some amazing poses. Quality Pictures at amazing price"),
+    ("Mayra V.", "I had a great experience. It was an easy and straightforward process. I really appreciated hearing recommended photo poses based on industry."),
+    ("Vincent B.", "Honestly amazing for the price and time. Quick in and out session with someone who\u2019s clearly experienced and knows what they are doing. If you need something quick and ASAP. This is your guy!"),
+    ("Jeannette R.", "Great quality & professional experience taking Headshots. I appreciate the recommendation of poses and the various number of shots provided in my session. Definetly would recommend"),
+    ("Cemal K.", "I just got my headshot from here. I was in rush, and they helped me a lot. They have the best price in New Jersey."),
+    ("Dawn D.", "Staff is extremely professional and my pictures turned out beautifully. Great service and final results. Highly impressed."),
+    ("Manar H.", "The photographer was super friendly and patient. The photos turned out amazing. Highly recommend!"),
+    ("Inijah Q.", "Fantastic. The photographer was great. Got the edited pictures within 2 hours. Highly recommended"),
+]
 PRICES = [("1 Headshot", "$50", "5 minute session", "About 5–10 photos in different poses"),
           ("3 Headshots", "$100", "10–15 minute session", "About 15–20 photos in different poses"),
           ("5 Headshots", "$150", "30 minute session", "About 20–40 photos in different poses"),
@@ -251,7 +261,7 @@ def footer():
   </div>
 </footer>
 <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
-  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Google reviews and Instagram feed, which may set their own cookies. <a href="/cookie-policy">Read our cookie policy</a></p>
+  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Instagram feed, which may set their own cookies. <a href="/cookie-policy">Read our cookie policy</a></p>
   <div class="cookie-actions"><button type="button" class="btn btn-outline btn-sm" data-consent="necessary">Necessary only</button><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept all</button></div>
 </div>
 <div class="mobile-bar"><a class="btn btn-outline" href="{PHONE_TEL}">Call</a><a class="btn btn-primary" href="/appointments">Book Now</a></div>
@@ -507,8 +517,8 @@ def testimonial(quote):
       <div class="stars">★★★★★</div>
       <h2>“{e(quote)}”</h2>
       <p style="margin-top:14px;color:#e6e1ff">What our clients say about Macro Headshots</p>
-      <div class="reviews" data-consent-embed="https://static.elfsight.com/platform/platform.js"><div class="{ELFSIGHT}" data-elfsight-app-lazy></div>
-        <div class="consent-placeholder"><p>Our Google reviews are loaded from a third-party service that may set cookies.</p><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept cookies &amp; show reviews</button></div></div>
+      <div class="review-grid">{"".join(f'<figure class="review-card"><div class="r-stars" aria-label="5 out of 5 stars">★★★★★</div><blockquote>{e(t)}</blockquote><figcaption><b>{e(n)}</b><span>Google review</span></figcaption></figure>' for n, t in REVIEWS)}</div>
+      <a class="btn btn-white" style="margin-top:26px" href="{MAPS_URL}" target="_blank" rel="noopener">See all reviews on Google</a>
     </div>
   </div>
 </section>
@@ -701,7 +711,7 @@ for slug, name in TOWNS:
     write(f"{slug}.html", landing(f"/{slug}/", name, slug))
 
 # pricing
-perks = [("wand", "Professional Retouching"), ("sparkle", "5-Star Google Reviews"),
+perks = [("wand", "Professional Retouching"), ("sparkle", "Highly Rated on Google"),
          ("clock", "Delivered Within 24 Hours"), ("layers", "Unlimited Backgrounds")]
 perk_html = "".join(f'<div class="perk"><span class="perk-ic">{icon(i)}</span><b>{t}</b></div>' for i, t in perks)
 m = c["/pricing"]
@@ -804,7 +814,7 @@ legal_page("privacy-policy", "Privacy Policy | Macro Headshots", "How Macro Head
 <li><b>HighLevel / LeadConnector</b>, which provides our appointment form and customer management system.</li>
 <li><b>Vercel</b>, which hosts this website.</li>
 <li><b>Google Fonts</b>, which serves the fonts used on this site.</li>
-<li><b>Elfsight</b> (Google reviews widget) and <b>Instagram (Meta)</b>, which load only if you accept cookies.</li>
+<li><b>Instagram (Meta)</b>, which loads only if you accept cookies.</li>
 </ul>
 <p>We may also disclose information if required by law or to protect our rights, property or safety.</p>
 <h2>Photographs and your consent</h2>
@@ -833,7 +843,6 @@ legal_page("cookie-policy", "Cookie Policy | Macro Headshots", "Which cookies an
 <tbody>
 <tr><td>Strictly necessary</td><td>Macro Headshots</td><td>Remembers your cookie choice (stored in your browser's local storage as <code>mh-consent</code>).</td><td>Always</td></tr>
 <tr><td>Strictly necessary</td><td>HighLevel / LeadConnector</td><td>Runs the appointment form so you can send a booking request.</td><td>When the booking form loads</td></tr>
-<tr><td>Third-party content</td><td>Elfsight</td><td>Displays our Google reviews.</td><td>Only after you click "Accept all"</td></tr>
 <tr><td>Third-party content</td><td>Instagram (Meta)</td><td>Displays our Instagram feed.</td><td>Only after you click "Accept all"</td></tr>
 </tbody></table></div>
 <p>We do not use advertising cookies, and this site does not run analytics or tracking tools.</p>
@@ -842,7 +851,7 @@ legal_page("cookie-policy", "Cookie Policy | Macro Headshots", "Which cookies an
 <p><button type="button" class="btn btn-primary btn-sm" data-cookie-settings>Open cookie settings</button></p>
 <p>You can also block or delete cookies in your browser settings. Blocking strictly necessary cookies may stop parts of the site, such as the booking form, from working.</p>
 <h2>Third-party policies</h2>
-<p>Third-party providers set and control their own cookies. Please see their privacy policies for details: <a href="https://www.gohighlevel.com/privacy-policy" target="_blank" rel="noopener">HighLevel</a>, <a href="https://elfsight.com/privacy-policy/" target="_blank" rel="noopener">Elfsight</a> and <a href="https://privacycenter.instagram.com/policy" target="_blank" rel="noopener">Instagram</a>.</p>
+<p>Third-party providers set and control their own cookies. Please see their privacy policies for details: <a href="https://www.gohighlevel.com/privacy-policy" target="_blank" rel="noopener">HighLevel</a> and <a href="https://privacycenter.instagram.com/policy" target="_blank" rel="noopener">Instagram</a>.</p>
 <h2>Contact us</h2>
 <p>Questions about this policy? Call us at <a href="{PHONE_TEL}">{PHONE}</a>.</p>
 """)
@@ -882,12 +891,12 @@ open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE
 # ---------- vercel config with security headers ----------
 CSP = "; ".join([
     "default-src 'self'",
-    "script-src 'self' https://static.elfsight.com https://*.elfsight.com https://*.elfsightcdn.com https://www.instagram.com https://link.msgsndr.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.elfsight.com https://*.elfsightcdn.com",
-    "font-src 'self' data: https://fonts.gstatic.com https://*.elfsight.com https://*.elfsightcdn.com",
+    "script-src 'self' https://www.instagram.com https://link.msgsndr.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src 'self' data: https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://*.elfsight.com https://*.elfsightcdn.com https://www.instagram.com",
-    "frame-src https://api.leadconnectorhq.com https://*.leadconnectorhq.com https://link.msgsndr.com https://www.instagram.com https://*.elfsight.com",
+    "connect-src 'self' https://www.instagram.com",
+    "frame-src https://api.leadconnectorhq.com https://*.leadconnectorhq.com https://link.msgsndr.com https://www.instagram.com",
     "media-src 'self' https:",
     "object-src 'none'",
     "base-uri 'self'",

@@ -217,7 +217,6 @@ write("portfolio.html", head("Headshot Portfolio & Reviews | Macro Headshots, NJ
 <section class="page-hero">{BLOBS}<div class="wrap">{crumbs(pf_crumb)}<span class="eyebrow">{icon('image')} Portfolio</span><h1>Headshot portfolio and reviews</h1>
 <p class="lead">Recent sessions from our Totowa studio and on location, and what clients say about us.</p></div></section>
 <section class="section soft" style="padding-top:48px"><div class="wrap">
-  <div class="filters" role="toolbar" aria-label="Filter photos">{chips}</div>
   <div class="masonry" id="gallery-grid">{items}</div>
 </div></section>
 <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
