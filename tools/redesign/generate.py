@@ -381,7 +381,7 @@ def strengths(about):
     html_cards = "".join(f'<div class="stat-card"><div class="big">{b}<small>{s}</small></div><p>{t}</p><span class="ic">{icon(i)}</span></div>' for b, s, t, i in cards)
     return f"""<section class="section soft">
   <div class="wrap">
-    <div class="section-head head-split"><div><span class="eyebrow">Why Macro Headshots</span><h2>Our core strengths</h2></div><p class="lead">{e(about)}</p></div>
+    <div class="section-head head-split"><div><span class="eyebrow">Why Macro Headshots</span><h2>Our core strengths</h2></div><p class="lead clamp">{e(about)}</p></div>
     <div class="cards4">{html_cards}</div>
   </div>
 </section>

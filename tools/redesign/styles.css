@@ -11,7 +11,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:var(--text);color:var(--body);font-size:16px;line-height:1.6;background:#fff;-webkit-font-smoothing:antialiased}
-img{max-width:100%;display:block}
+img{max-width:100%;display:block;height:auto}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,h4{font-family:var(--head);color:var(--ink);font-weight:600;margin:0;letter-spacing:-.02em}
 h1{font-size:clamp(36px,5vw,56px);line-height:1.12}
@@ -462,4 +462,25 @@ p{margin:0}
   .stat-card{min-height:0}
   .contact-card{padding:26px}
   .footer .cols2{grid-template-columns:1fr 1fr}
+}
+
+/* phone refinements */
+@media (max-width:560px){
+  .section{padding:52px 0}
+  .section-head{margin-bottom:28px}
+  h2{font-size:28px}
+  .cards4{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-card{padding:16px;min-height:0;gap:8px}
+  .stat-card .big{font-size:30px}
+  .stat-card .big small{font-size:14px}
+  .stat-card p{font-size:13px;line-height:1.45}
+  .stat-card .ic{display:none}
+  .price-grid,.hiw-steps{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -24px;padding:4px 24px 14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .price-grid::-webkit-scrollbar,.hiw-steps::-webkit-scrollbar{display:none}
+  .price-card,.hiw-step{flex:0 0 80%;scroll-snap-align:start}
+  .hiw-table{display:none}
+  .clamp{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+  .stack-text p.small{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+  .hero{padding-bottom:48px}
+  .local-copy p{font-size:16px}
 }
