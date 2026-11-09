@@ -11,6 +11,7 @@ shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(f"{OUT}/assets"); os.makedirs(f"{OUT}/css"); os.makedirs(f"{OUT}/js")
 shutil.copy(f"{HERE}/styles.css", f"{OUT}/css/styles.css")
 shutil.copy(f"{HERE}/main.js", f"{OUT}/js/main.js")
+shutil.copy(f"{HERE}/middleware.js", f"{OUT}/middleware.js")
 import hashlib as _h
 CSS_V = _h.sha1(open(f"{HERE}/styles.css", "rb").read()).hexdigest()[:10]
 JS_V = _h.sha1(open(f"{HERE}/main.js", "rb").read()).hexdigest()[:10]
