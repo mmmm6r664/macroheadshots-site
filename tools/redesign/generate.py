@@ -444,7 +444,7 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments") + nav("/
 </section>
 <section class="section soft" style="padding-top:56px"><div class="wrap book-grid">
   <div class="form-card">
-    <iframe src="https://api.leadconnectorhq.com/widget/form/{FORM_ID}" id="inline-{FORM_ID}" data-layout="{{'id':'INLINE'}}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="Appointments" data-height="980" data-layout-iframe-id="inline-{FORM_ID}" data-form-id="{FORM_ID}" title="Appointment request form"></iframe>
+    <iframe src="https://api.leadconnectorhq.com/widget/form/{FORM_ID}" id="inline-{FORM_ID}" data-layout="{{'id':'INLINE'}}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="Appointments" data-height="1150" data-layout-iframe-id="inline-{FORM_ID}" data-form-id="{FORM_ID}" title="Appointment request form"></iframe>
     <script src="https://link.msgsndr.com/js/form_embed.js"></script>
   </div>
   <aside class="side">
@@ -453,8 +453,8 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments") + nav("/
       <ol class="steps"><li>Send the form with your preferred date and package.</li><li>We confirm your appointment.</li><li>Come to the studio for your session.</li><li>Get your retouched photos within 24 hours.</li></ol>
     </div>
     <div class="contact-card">
-      <h3>Better yet, come see us in person!</h3>
-      <p>We love our customers, so feel free to visit during normal business hours or call us to schedule your appointment.</p>
+      <h3>Prefer to talk to us?</h3>
+      <p>Call the studio or stop by during business hours.</p>
       <div class="contact-row"><span class="ic">{icon('phone')}</span><div><small>Call us</small><b><a href="{PHONE_TEL}">{PHONE}</a></b></div></div>
       <div class="contact-row"><span class="ic">{icon('pin')}</span><div><small>Studio location</small><b>195 US-46, Suite 9, Totowa NJ</b></div></div>
     </div>

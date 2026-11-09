@@ -217,7 +217,7 @@ p{margin:0}
 /* booking */
 .book-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:24px;align-items:start}
 .form-card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px 8px;overflow:hidden}
-.form-card iframe{display:block;width:100%;border:0;min-height:980px}
+.form-card iframe{display:block;width:100%;border:0;min-height:1150px}
 .side{display:grid;gap:20px;position:sticky;top:100px}
 .side .contact-card{padding:28px}
 .steps{display:grid;gap:14px;counter-reset:s}
@@ -279,6 +279,7 @@ p{margin:0}
   .gallery{grid-template-columns:1fr 1fr 1fr;gap:10px}
   .quote-band,.cta-band{padding:36px 26px}
   .side{position:static}
+  .form-card iframe{min-height:1250px}
   .page-hero{padding-top:130px}
   .mobile-bar{display:flex;position:fixed;left:12px;right:12px;bottom:12px;z-index:60;gap:10px;background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:8px}
   .mobile-bar .btn{flex:1;padding:12px 10px}
