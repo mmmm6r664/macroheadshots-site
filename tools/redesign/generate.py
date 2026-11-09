@@ -11,7 +11,6 @@ shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(f"{OUT}/assets"); os.makedirs(f"{OUT}/css"); os.makedirs(f"{OUT}/js")
 shutil.copy(f"{HERE}/styles.css", f"{OUT}/css/styles.css")
 shutil.copy(f"{HERE}/main.js", f"{OUT}/js/main.js")
-shutil.copy(f"{HERE}/middleware.js", f"{OUT}/middleware.js")
 import hashlib as _h
 CSS_V = _h.sha1(open(f"{HERE}/styles.css", "rb").read()).hexdigest()[:10]
 JS_V = _h.sha1(open(f"{HERE}/main.js", "rb").read()).hexdigest()[:10]
@@ -186,13 +185,25 @@ def faq_ld(extra=()):
     return {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in list(extra) + FAQS]}
 
+SERVICES = [
+    ("corporate-headshots", "Corporate Headshots"), ("linkedin-headshots", "LinkedIn Headshots"),
+    ("acting-headshots", "Acting Headshots"), ("residency-headshots", "Residency Headshots"),
+    ("professional-headshots", "Professional Headshots"), ("executive-headshots", "Executive Headshots"),
+    ("team-headshots", "Team Headshots"), ("headshot-retouching", "Headshot Retouching"),
+]
+
 def nav(active):
-    links = [("/", "Home"), ("/#gallery", "Gallery"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
-    items = "".join(f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in links)
+    sub = "".join(f'<a href="/{s}/">{n}</a>' for s, n in SERVICES)
+    def link(h, t):
+        return f'<a href="{h}"{" class=\"active\"" if active == h else ""}>{t}</a>'
+    svc_active = active == "/services" or (active or "").strip("/") in [s for s, _ in SERVICES]
     return f"""<header class="nav" id="nav">
   <div class="nav-inner">
     <a class="nav-logo" href="/" aria-label="Macro Headshots home"><img src="/assets/logo-light.png" alt="Macro Headshots" width="104" height="38"></a>
-    <nav class="nav-links" aria-label="Main">{items}</nav>
+    <nav class="nav-links" aria-label="Main">
+      <div class="dd"><a href="/services"{" class='active'" if svc_active else ""}>Services</a><div class="dd-menu">{sub}<a href="/services" class="dd-all">All services →</a></div></div>
+      {link("/locations", "Locations")}{link("/portfolio", "Portfolio")}{link("/guides", "Guides")}{link("/pricing", "Pricing")}
+    </nav>
     <div class="nav-cta">
       <a class="btn btn-outline btn-sm" href="{PHONE_TEL}">Call {PHONE}</a>
       <a class="btn btn-primary btn-sm" href="/appointments">Book Now</a>
@@ -203,15 +214,21 @@ def nav(active):
 <main id="main">
 """
 
+def crumbs(items):
+    parts = []
+    for i, (n, pth) in enumerate(items):
+        parts.append(f'<span aria-current="page">{e(n)}</span>' if i == len(items) - 1 else f'<a href="{pth}">{e(n)}</a>')
+    return '<nav class="crumbs" aria-label="Breadcrumb">' + '<span class="sep">›</span>'.join(parts) + '</nav>'
+
 def footer():
-    towns = "".join(f'<li><a href="/{s}/">Headshots in {n}</a></li>' for s, n in TOWNS)
+    towns = "".join(f'<li><a href="/{s}/">{n}</a></li>' for s, n in TOWNS)
     return f"""</main>
 <footer class="footer">
   <div class="wrap">
     <div class="footer-grid">
       <div>
         <img class="logo" src="/assets/logo-light.png" alt="Macro Headshots" loading="lazy">
-        <h4>Reach Us At</h4>
+        <h2 class="fh">Reach Us At</h2>
         <div class="reach">
           <div>{icon('phone')}<a href="{PHONE_TEL}">{PHONE}</a></div>
           <div>{icon('pin')}<a href="{MAPS_URL}" target="_blank" rel="noopener">Studio: {ADDRESS}</a></div>
@@ -219,19 +236,21 @@ def footer():
         <div class="socials"><a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">{FB_SVG}</a><a href="{IG_URL}" target="_blank" rel="noopener" aria-label="Instagram">{IG_SVG}</a></div>
       </div>
       <div>
-        <h4>Studio</h4>
-        <ul><li><a href="/">Home</a></li><li><a href="/#gallery">Gallery</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#personal-branding">Personal Branding Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
+        <h2 class="fh">Services</h2>
+        <ul>{"".join(f'<li><a href="/{s}/">{n}</a></li>' for s, n in SERVICES)}<li><a href="/#personal-branding">Personal Branding</a></li></ul>
+        <h2 class="fh" style="margin-top:26px">Studio</h2>
+        <ul><li><a href="/portfolio">Portfolio &amp; Reviews</a></li><li><a href="/guides">Guides &amp; FAQs</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li></ul>
       </div>
       <div>
-        <h4>Locations We Serve</h4>
-        <ul class="cols2">{towns}</ul>
+        <h2 class="fh"><a href="/locations">Locations</a></h2>
+        <ul class="cols2"><li><a href="/locations#studio">Totowa Studio</a></li>{towns}</ul>
       </div>
     </div>
     <div class="footer-bottom"><span>© 2026 Macro Headshots. All rights reserved.</span><span class="legal"><a href="/privacy-policy">Privacy Policy</a><a href="/cookie-policy">Cookie Policy</a><button type="button" class="linklike" data-cookie-settings>Cookie settings</button></span></div>
   </div>
 </footer>
 <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
-  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Google reviews and Instagram feed, which may set their own cookies. <a href="/cookie-policy">Learn more</a></p>
+  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Google reviews and Instagram feed, which may set their own cookies. <a href="/cookie-policy">Read our cookie policy</a></p>
   <div class="cookie-actions"><button type="button" class="btn btn-outline btn-sm" data-consent="necessary">Necessary only</button><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept all</button></div>
 </div>
 <div class="mobile-bar"><a class="btn btn-outline" href="{PHONE_TEL}">Call</a><a class="btn btn-primary" href="/appointments">Book Now</a></div>
@@ -243,23 +262,33 @@ def footer():
 BLOBS = '<div class="hero-blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>'
 
 # ---------- sections ----------
-def hero(place, lead, town=False):
+def hero(place, lead, town=False, h1=None, home=False):
+    h1 = h1 or f'Headshots near <span class="accent">{e(place)}</span>, NJ'
+    why = ""
+    if home:
+        why = f'''<ul class="why-list">
+        <li>{icon('check')}<span><b>Packages from $50</b> · published prices, no surprises</span></li>
+        <li>{icon('clock')}<span><b>Retouched &amp; emailed within 24 hours</b></span></li>
+        <li>{icon('layers')}<span><b>Unlimited backgrounds</b> · studio backdrops or digital</span></li>
+        <li>{icon('wand')}<span><b>Every photo retouched</b> and color graded</span></li>
+        <li>{icon('pin')}<span><b>Real studio:</b> 195 US-46, Suite 9, Totowa, NJ</span></li>
+      </ul>'''
     return f"""<section class="hero">
   {BLOBS}
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">{icon('pin')} {"Serving " + e(place) + ", NJ · Studio in Totowa" if town else "Studio in Totowa, New Jersey"}</span>
-      <h1>Best Headshots in <span class="accent">{e(place)}</span></h1>
+      <span class="eyebrow">{icon('pin')} {(e(place) + " clients visit our Totowa studio" if place != "Totowa" else "Our studio is right here in Totowa") if town else "Serving Northern New Jersey &amp; NYC"}</span>
+      <h1>{h1}</h1>
       <p class="lead">{e(lead)}</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="/appointments">Book Your Session</a>
         <a class="btn btn-outline" href="/pricing">See Pricing</a>
       </div>
-      <div class="chips">
+      {why or f'''<div class="chips">
         <span class="chip">{icon('clock')} Retouched in 24 hours</span>
         <span class="chip">{icon('layers')} Unlimited backgrounds</span>
         <span class="chip">{icon('sparkle')} Every photo retouched</span>
-      </div>
+      </div>'''}
     </div>
     <div class="hero-visual">
       <img class="collage" src="/assets/hero-clients.webp" alt="Recent Macro Headshots clients: corporate and professional headshots" width="1200" height="940" fetchpriority="high">
@@ -367,6 +396,20 @@ def branding(place=None):
         <span class="chip">{icon('sparkle')} Every photo retouched</span>
       </div>
       <a class="btn btn-primary" href="/appointments">Book a branding session</a>
+    </div>
+  </div>
+</section>
+"""
+
+def team_intro():
+    return f"""<section class="section" id="team">
+  <div class="wrap split">
+    <div class="split-media"><img src="/assets/gallery/{GALLERY[0][0]}" alt="A client portrait in the Macro Headshots studio" width="{GALLERY[0][1]}" height="{GALLERY[0][2]}" loading="lazy"></div>
+    <div>
+      <span class="eyebrow">{icon('image')} Meet the team</span>
+      <h2>The photographers behind Macro Headshots</h2>
+      <p class="lead" style="margin-top:18px">Our photographers work in one dedicated studio in Totowa, with professional lighting and backdrops set up and ready, so your session starts on time. During the shoot we coach you on posture and expression, then our retouching team edits every image you choose and emails it within 24 hours.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px"><a class="btn btn-primary" href="/appointments">Book a session</a><a class="btn btn-outline" href="/portfolio">See our work</a></div>
     </div>
   </div>
 </section>
@@ -613,22 +656,42 @@ def landing(page, place, active_town=None):
         quote += "."
     meta = dict(c[page])
     if town:
-        meta["title"] = f"Headshots in {place}, NJ | Macro Headshots Studio"
+        tk = active_town.replace("headshots-in-", "")
+        meta["title"] = (f"Headshot Studio in Totowa, NJ | Macro Headshots" if tk == "totowa"
+                         else f"Headshots near {place}, NJ | Macro Headshots, Totowa")
         meta["desc"] = tinfo["desc"]
-    tfaq = [(q.replace("877-622-4973", PHONE), a) for q, a in tinfo["faqs"]] if town else []
-    crumbs = [breadcrumb([("Home", "/"), (f"Headshots in {place}", page)])] if town else []
-    return (head(meta["title"], meta["desc"], page, [faq_ld(tfaq)] + crumbs, preload="/assets/hero-clients.webp") + nav("/" if page == "/" else None) + hero(place, lead, town) + trust() + (local_section(active_town, place) if town else "")
-            + services(None if town else retouch, place if town else None) + residency(place if town else None) + branding(place if town else None) + gallery() + strengths(intro if not town else f"Clients from {place} and across North Jersey choose Macro Headshots for fast turnaround, unlimited backgrounds and natural-looking retouching on every photo.") + pricing_teaser() + how_it_works(True)
-            + testimonial(quote) + (instagram() if page == "/" else "") + faq(tfaq) + contact() + areas(active_town, place if town else None) + cta() + footer())
+        li_q = (f"Where can I get LinkedIn headshots in Totowa, NJ?" if tk == "totowa"
+                else f"Where can I get LinkedIn headshots near {place}, NJ?")
+        li_a = (f"At our studio at {ADDRESS}. " if tk == "totowa" else f"{place} clients come to our studio at {ADDRESS}. ") + tinfo["route"] + " A LinkedIn headshot is $50 for a 5-minute session, retouched and emailed within 24 hours."
+        tfaq = [(li_q, li_a)] + [(q.replace("877-622-4973", PHONE), a) for q, a in tinfo["faqs"]]
+        crumb = [("Home", "/"), ("Locations", "/locations"), (("Headshots in Totowa" if tk == "totowa" else f"Headshots near {place}"), page)]
+        svc_ld = {"@context": "https://schema.org", "@type": "Service", "name": f"Professional headshots for {place}, NJ",
+                  "serviceType": "Headshot photography", "provider": {"@id": SITE + "/#business"},
+                  "areaServed": {"@type": "City", "name": f"{place}, NJ"}, "url": canon(page),
+                  "description": tinfo["desc"]}
+        h1 = ('Headshot studio in <span class="accent">Totowa</span>, NJ' if tk == "totowa"
+              else f'Headshots near <span class="accent">{e(place)}</span>, NJ')
+        lead2 = lead + ("" if tk == "totowa" else f" There is no studio in {place}: every session takes place at our Totowa studio.")
+        return (head(meta["title"], meta["desc"], page, [faq_ld(tfaq), breadcrumb(crumb), svc_ld], preload="/assets/hero-clients.webp") + nav(None)
+                + hero(place, lead2, True, h1).replace('<span class="eyebrow">', crumbs(crumb) + '<span class="eyebrow">', 1) + local_section(active_town, place)
+                + services(None, place) + gallery() + pricing_teaser() + how_it_works(True)
+                + testimonial(quote) + faq(tfaq) + contact() + areas(active_town, place) + cta() + footer())
+    home_title = "Professional Headshots in Totowa, NJ | MacroHeadshots"
+    home_desc = "Professional headshots in Totowa, NJ, serving Northern New Jersey and NYC. Corporate, LinkedIn and acting portraits. Packages from $50. Book today."
+    home_lead = "Corporate, LinkedIn, acting, residency and personal branding headshots from our Totowa studio, retouched and emailed within 24 hours."
+    return (head(home_title, home_desc, "/", [faq_ld()], preload="/assets/hero-clients.webp") + nav("/")
+            + hero(place, home_lead, False, 'Professional Headshots in <span class="accent">Totowa, NJ</span>', home=True)
+            + trust() + gallery() + testimonial(quote) + services(retouch, None) + team_intro() + residency(None) + branding(None)
+            + strengths(intro) + pricing_teaser() + how_it_works(True) + faq() + contact() + instagram() + areas(None, None) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
 for slug, name in TOWNS:
     write(f"{slug}.html", landing(f"/{slug}/", name, slug))
 
 # pricing
-perks = [(IMG["perk_retouch"], "Professional Retouching"), (IMG["perk_reviews"], "5 Star Reviews"),
-         (IMG["perk_delivery"], "Same Day Delivery"), (IMG["perk_backdrops"], "Unlimited Backgrounds")]
-perk_html = "".join(f'<div class="perk"><img src="{s}" alt="" loading="lazy"><b>{t}</b></div>' for s, t in perks)
+perks = [("wand", "Professional Retouching"), ("sparkle", "5-Star Google Reviews"),
+         ("clock", "Delivered Within 24 Hours"), ("layers", "Unlimited Backgrounds")]
+perk_html = "".join(f'<div class="perk"><span class="perk-ic">{icon(i)}</span><b>{t}</b></div>' for i, t in perks)
 m = c["/pricing"]
 write("pricing.html", head(m["title"], m["desc"], "/pricing", [faq_ld(), breadcrumb([("Home", "/"), ("Pricing", "/pricing")])]) + nav("/pricing") + f"""
 <section class="page-hero">{BLOBS}
@@ -693,6 +756,8 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(
 </section>
 """ + gallery() + strengths(fix(find("/", "paragraph", 0)[1])) + faq() + cta() + footer())
 
+
+exec(open(f"{HERE}/ext_pages.py").read())
 
 # ---------- legal pages ----------
 UPDATED = "November 9, 2026"
@@ -795,8 +860,8 @@ og.paste(logo, (60, 235), logo)
 og.save(f"{OUT}/assets/og-image.jpg", quality=86)
 
 # ---------- sitemap & robots ----------
-paths = ["/", "/pricing", "/appointments"] + [f"/{s}/" for s, _ in TOWNS] + ["/privacy-policy", "/cookie-policy"]
-prio = {"/": "1.0", "/appointments": "0.9", "/pricing": "0.9", "/privacy-policy": "0.2", "/cookie-policy": "0.2"}
+paths = ["/", "/services"] + [f"/{s}/" for s, _ in SERVICES] + ["/pricing", "/appointments", "/locations"] + [f"/{s}/" for s, _ in TOWNS] + ["/portfolio", "/guides"] + [f"/guides/{g['slug']}" for g in GUIDES] + ["/privacy-policy", "/cookie-policy"]
+prio = {"/": "1.0", "/services": "0.9", "/locations": "0.8", "/portfolio": "0.6", "/guides": "0.6", "/appointments": "0.9", "/pricing": "0.9", "/privacy-policy": "0.2", "/cookie-policy": "0.2"}
 urls = "".join(f"<url><loc>{canon(x)}</loc><lastmod>2026-11-09</lastmod><priority>{prio.get(x, '0.7')}</priority></url>" for x in paths)
 open(f"{OUT}/sitemap.xml", "w").write(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
 open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
@@ -831,7 +896,7 @@ json.dump({"cleanUrls": True,
            "headers": [{"source": "/(.*)", "headers": SEC},
                        {"source": "/assets/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800"}]},
                        {"source": "/(css|js)/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}]}],
-           "redirects": [{"source": "/home", "destination": "/", "permanent": True}, {"source": "/gallery", "destination": "/#gallery", "permanent": True}],
-           "rewrites": [{"source": "/headshots-in-:town/", "destination": "/headshots-in-:town"}]},
+           "redirects": [{"source": "/home", "destination": "/", "permanent": True}, {"source": "/gallery", "destination": "/portfolio", "permanent": True}],
+           "rewrites": [{"source": "/headshots-in-:town/", "destination": "/headshots-in-:town"}] + [{"source": f"/{s}/", "destination": f"/{s}"} for s, _ in SERVICES]},
           open(f"{OUT}/vercel.json", "w"), indent=2)
 print("pages:", 3 + len(TOWNS), "assets:", len(os.listdir(f"{OUT}/assets")))

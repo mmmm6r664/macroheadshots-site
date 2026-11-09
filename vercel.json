@@ -65,7 +65,7 @@
     },
     {
       "source": "/gallery",
-      "destination": "/#gallery",
+      "destination": "/portfolio",
       "permanent": true
     }
   ],
@@ -73,6 +73,38 @@
     {
       "source": "/headshots-in-:town/",
       "destination": "/headshots-in-:town"
+    },
+    {
+      "source": "/corporate-headshots/",
+      "destination": "/corporate-headshots"
+    },
+    {
+      "source": "/linkedin-headshots/",
+      "destination": "/linkedin-headshots"
+    },
+    {
+      "source": "/acting-headshots/",
+      "destination": "/acting-headshots"
+    },
+    {
+      "source": "/residency-headshots/",
+      "destination": "/residency-headshots"
+    },
+    {
+      "source": "/professional-headshots/",
+      "destination": "/professional-headshots"
+    },
+    {
+      "source": "/executive-headshots/",
+      "destination": "/executive-headshots"
+    },
+    {
+      "source": "/team-headshots/",
+      "destination": "/team-headshots"
+    },
+    {
+      "source": "/headshot-retouching/",
+      "destination": "/headshot-retouching"
     }
   ]
 }
