@@ -681,7 +681,7 @@ def landing(page, place, active_town=None):
     home_lead = "Corporate, LinkedIn, acting, residency and personal branding headshots from our Totowa studio, retouched and emailed within 24 hours."
     return (head(home_title, home_desc, "/", [faq_ld()], preload="/assets/hero-clients.webp") + nav("/")
             + hero(place, home_lead, False, 'Professional Headshots in <span class="accent">Totowa, NJ</span>', home=True)
-            + trust() + gallery() + testimonial(quote) + services(retouch, None) + team_intro() + residency(None) + branding(None)
+            + trust() + gallery() + testimonial(quote) + services(retouch, None) + residency(None) + branding(None)
             + strengths(intro) + pricing_teaser() + how_it_works(True) + faq() + contact() + instagram() + areas(None, None) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
