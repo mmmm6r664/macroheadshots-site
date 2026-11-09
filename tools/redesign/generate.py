@@ -1,5 +1,7 @@
 """Generate the redesigned Macro Headshots site (Shiprocket-style) from the captured content."""
 import html, json, os, re, shutil, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from towns import TOWN_INFO
 
 CONTENT, ASSETS_SRC, BRAND, OUT = sys.argv[1:5]
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -59,10 +61,11 @@ MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Macro+Headshots+195+
 FB, IG_URL = "https://www.facebook.com/MacroHeadshots", "https://instagram.com/macroheadshots"
 FORM_ID = "F39Doj60gH02JaLUfmFP"
 ELFSIGHT = "elfsight-app-c65230f6-0f81-4d8a-9478-d76339342fc4"
-PRICES = [("1 Headshot", "$50", "5 minute session", "Choose between 3–10 shots"),
-          ("3 Headshots", "$100", "15 minute session", "Choose between 10–20 shots"),
-          ("5 Headshots", "$150", "30 minute session", "Choose between 20–40 shots"),
-          ("10 Headshots", "$250", "1 hour session", "Choose between 40–100 shots")]
+PRICES = [("1 Headshot", "$50", "5 minute session", "About 5–10 photos in different poses"),
+          ("3 Headshots", "$100", "10–15 minute session", "About 15–20 photos in different poses"),
+          ("5 Headshots", "$150", "30 minute session", "About 20–40 photos in different poses"),
+          ("10 Headshots", "$250", "1 hour session", "About 40–100 photos in different poses")]
+PICKS = [1, 3, 5, 10]
 
 TOWNS = []
 for p in c:
@@ -168,9 +171,9 @@ def breadcrumb(items):
     return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
         {"@type": "ListItem", "position": i + 1, "name": n, "item": canon(pth)} for i, (n, pth) in enumerate(items)]}
 
-def faq_ld():
+def faq_ld(extra=()):
     return {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
-        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQS]}
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in list(extra) + FAQS]}
 
 def nav(active):
     links = [("/", "Home"), ("/#residency", "Residency"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
@@ -243,7 +246,7 @@ def hero(place, lead, town=False):
       </div>
       <div class="chips">
         <span class="chip">{icon('clock')} Retouched in 24 hours</span>
-        <span class="chip">{icon('layers')} 6 backdrops</span>
+        <span class="chip">{icon('layers')} Unlimited backgrounds</span>
         <span class="chip">{icon('sparkle')} Every photo retouched</span>
       </div>
     </div>
@@ -267,20 +270,20 @@ def trust():
 def bullets(items):
     return "<ul>" + "".join(f"<li>{icon('check')}<span>{x}</span></li>" for x in items) + "</ul>"
 
-def services(retouch_text):
+def services(retouch_text, place=None):
     ig = lambda i, cap: f'<div class="ph"><img src="{IG[i]}" alt="{cap} headshot by Macro Headshots" loading="lazy"><div class="ph-cap">{cap}<span class="arrow-btn">{icon("arrow")}</span></div></div>'
     return f"""<section class="section" id="services">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">What we do</span>
       <h2>Look at the absolute best you have ever looked</h2>
-      <p class="lead">Corporate headshots, acting headshots and more — shot in our Totowa studio and retouched by experts.</p>
+      <p class="lead">{"Corporate, acting and branding headshots for " + e(place) + " clients — shot in our Totowa studio and retouched by experts." if place else "Corporate headshots, acting headshots and more — shot in our Totowa studio and retouched by experts."}</p>
     </div>
     <div class="stack">
       <article class="stack-card">
         <div class="stack-top"><div class="stack-label"><div><span class="stack-num">1/3</span><div class="stack-icon">{icon('briefcase')}</div></div><h3>Corporate<br>headshots</h3></div><a class="btn btn-white btn-sm" href="/appointments">Book now</a></div>
         <div class="stack-body">
-          <div class="stack-text"><p>For business professionals who want a polished, confident image for LinkedIn, company websites and team pages.</p>{bullets(['A comfortable, relaxed studio so you feel at ease', 'Choose from 6 backdrops, or change the background digitally', 'Every photo retouched and delivered within 24 hours'])}</div>
+          <div class="stack-text"><p>For business professionals who want a polished, confident image for LinkedIn, company websites and team pages.</p>{bullets(['A comfortable, relaxed studio so you feel at ease', 'Unlimited backgrounds — studio backdrops or digital background changes', 'Every photo retouched and delivered within 24 hours'])}</div>
           <div class="stack-media">{ig(4,'Professional')}{ig(3,'Corporate')}{ig(11,'Executive')}</div>
         </div>
       </article>
@@ -294,7 +297,7 @@ def services(retouch_text):
       <article class="stack-card">
         <div class="stack-top"><div class="stack-label"><div><span class="stack-num">3/3</span><div class="stack-icon">{icon('wand')}</div></div><h3>Expert<br>retouching</h3></div><a class="btn btn-white btn-sm" href="/pricing">See pricing</a></div>
         <div class="stack-body">
-          <div class="stack-text"><p><b>We are the retouching experts.</b></p><p class="small">{e(retouch_text)}</p>{bullets(['Included with every headshot package', 'Background changes done digitally'])}</div>
+          <div class="stack-text"><p><b>We are the retouching experts.</b></p>{f'<p class="small">{e(retouch_text)}</p>' if retouch_text else ""}{bullets(['Included with every headshot package', 'Background changes done digitally'])}</div>
           <div class="stack-media one"><div class="ph"><img src="{IMG['retouch']}" alt="Before and after headshot retouching" loading="lazy"><div class="ph-cap">Before → After<span class="arrow-btn">{icon('arrow')}</span></div></div></div>
         </div>
       </article>
@@ -303,7 +306,7 @@ def services(retouch_text):
 </section>
 """
 
-def residency():
+def residency(place=None):
     specs = [("2.5 × 3.5 in", "Passport-size portrait"), ("375 × 525 px", "At 150 dpi"), ("JPG, ≤ 150 KB", "Upload-ready file"), ("Color, centered", "Head &amp; shoulders")]
     spec_html = "".join(f'<div class="spec"><b>{a}</b><small>{b}</small></div>' for a, b in specs)
     return f"""<section class="section" id="residency">
@@ -311,7 +314,7 @@ def residency():
     <div class="res-band">
       <div class="res-text">
         <span class="eyebrow">{icon('briefcase')} Residency headshots</span>
-        <h2>Residency &amp; ERAS headshots for medical applicants</h2>
+        <h2>Residency &amp; ERAS headshots for {"medical applicants from " + e(place) if place else "medical applicants"}</h2>
         <p class="lead">Your photo is one of the first things program directors see on your residency application. We photograph you in a polished, business-professional style on a clean backdrop, then deliver a version sized for the ERAS upload alongside your full-resolution, retouched images.</p>
         <div class="specs">{spec_html}</div>
         {bullets(['Quick sessions — the 5-minute package starts at $50', 'Retouched and delivered within 24 hours, in time for application deadlines', 'Plain light backdrop and centered framing that suits ERAS'])}
@@ -331,7 +334,7 @@ def residency():
 </section>
 """
 
-def branding():
+def branding(place=None):
     tiles = [
         (7, "Realtors", "Listings, yard signs and your brokerage or Zillow profile."),
         (2, "Influencers", "A consistent, recognizable look across Instagram, TikTok and YouTube."),
@@ -342,12 +345,12 @@ def branding():
     html_t = "".join(f'<a class="brand-tile" href="/appointments"><img src="{IG[i]}" alt="Personal branding headshot for {t.lower()}" loading="lazy"><div class="bt-body"><div class="bt-head"><h3>{t}</h3><span class="arrow-btn">{icon("arrow")}</span></div><p>{d}</p></div></a>' for i, t, d in tiles)
     return f"""<section class="section soft" id="personal-branding">
   <div class="wrap">
-    <div class="section-head head-split"><div><span class="eyebrow">{icon('sparkle')} Personal branding</span><h2>Personal branding headshots</h2></div>
+    <div class="section-head head-split"><div><span class="eyebrow">{icon('sparkle')} Personal branding</span><h2>Personal branding headshots{" in " + e(place) if place else ""}</h2></div>
     <p class="lead">When you are the brand, your photo does the introducing. We create headshots with personality for realtors, influencers, consultants, speakers and content creators — images that feel like you and look great everywhere you show up.</p></div>
     <div class="brand-grid">{html_t}</div>
     <div class="brand-foot">
       <div class="chips" style="margin-top:0">
-        <span class="chip">{icon('layers')} 6 backdrops + digital background changes</span>
+        <span class="chip">{icon('layers')} Unlimited backgrounds</span>
         <span class="chip">{icon('timer')} Longer sessions for more looks</span>
         <span class="chip">{icon('sparkle')} Every photo retouched</span>
       </div>
@@ -360,7 +363,7 @@ def branding():
 def strengths(about):
     cards = [
         ("24", "hrs", "Every retouched photo is delivered within 24 hours of your session.", "clock"),
-        ("6", "backdrops", "Six studio backdrops, plus the ability to change backgrounds digitally.", "layers"),
+        ("∞", "backgrounds", "Unlimited backgrounds — studio backdrops plus digital background changes.", "layers"),
         ("100", "%", "All pictures are retouched — no extra add-ons to think about.", "sparkle"),
         ("5–60", "min", "Session packages from a quick 5 minutes up to a full hour.", "timer"),
     ]
@@ -402,10 +405,31 @@ def retouching(text):
 def price_cards(cta="Book this package"):
     out = []
     for i, (tag, amt, sess, shots) in enumerate(PRICES):
+        pk = PICKS[i]
         out.append(f'<div class="price-card{" feature" if i == 2 else ""}"><span class="tag">{tag}</span><div class="amount">{amt}</div>'
-                   f'{bullets([sess, shots, "Professional retouching included"])}'
+                   f'{bullets([sess, shots, f"You pick your favorite {pk}" if pk > 1 else "You pick your favorite 1", "Retouched, color graded &amp; emailed", "Digital files only"])}'
                    f'<a class="btn {"btn-white" if i == 2 else "btn-primary"}" href="/appointments">{cta}</a></div>')
     return '<div class="price-grid">' + "".join(out) + "</div>"
+
+def how_it_works(soft=False):
+    steps = [("calendar", "Book your package", "Choose 1, 3, 5 or 10 headshots and send the booking form, or call us."),
+             ("image", "We shoot in different poses", "We take plenty of photos in different poses and expressions during your session."),
+             ("check", "You pick your favorites", "Review your photos and select the ones you love — as many as your package includes."),
+             ("wand", "Retouched, color graded & emailed", "We edit, retouch and color grade your picks, then email them to you within 24 hours.")]
+    st = "".join(f'<div class="hiw-step"><span class="hiw-num">{i+1}</span><span class="ic">{icon(ic)}</span><h3>{t}</h3><p>{d}</p></div>' for i, (ic, t, d) in enumerate(steps))
+    rows = "".join(f'<tr><td><b>{t}</b><small>{a}</small></td><td>{s}</td><td>{sh.replace(" in different poses", "")}</td><td><b>{PICKS[i]}</b></td></tr>' for i, (t, a, s, sh) in enumerate(PRICES))
+    return f"""<section class="section{' soft' if soft else ''}" id="how-it-works">
+  <div class="wrap">
+    <div class="section-head head-split"><div><span class="eyebrow">{icon('timer')} How it works</span><h2>How a session works</h2></div>
+    <p class="lead">Every package follows the same simple process — the only difference is how long we shoot and how many final headshots you choose.</p></div>
+    <div class="hiw-steps">{st}</div>
+    <div class="hiw-table"><table>
+      <thead><tr><th>Package</th><th>Session length</th><th>Photos we take</th><th>Final headshots you choose</th></tr></thead>
+      <tbody>{rows}</tbody></table></div>
+    <div class="digital-note">{icon('image')}<p><b>Digital images only.</b> All headshots are delivered as digital files by email — we do not offer printing.</p></div>
+  </div>
+</section>
+"""
 
 def pricing_teaser():
     return f"""<section class="section">
@@ -441,10 +465,10 @@ def instagram():
 """
 
 FAQS = None
-def faq():
+def faq(extra=()):
     items = []
-    for q, a in FAQS:
-        parts = [p.strip() for p in re.split(r"(?<=picture\.)\s+", a) if p.strip()]
+    for q, a in list(extra) + FAQS:
+        parts = [p.strip() for p in re.split(r"(?<=pick \d\.)\s+|(?<=pick 10\.)\s+|(?<=pick 1\.)\s+", a) if p.strip()]
         items.append(f'<details><summary>{e(q)}<span class="plus">+</span></summary><div class="ans">{"".join(f"<p>{e(p)}</p>" for p in parts)}</div></details>')
     items[0] = items[0].replace("<details>", "<details open>", 1)
     return f"""<section class="section" id="faq">
@@ -478,6 +502,33 @@ def areas(active=None, town_name=None):
   <div class="wrap">
     <div class="section-head"><span class="eyebrow">{icon('pin')} Locations</span><h2>{"Serving " + e(town_name) + " and all of North Jersey" if town_name else "Serving North Jersey and the New York Metro Area"}</h2><p class="lead">Our Totowa studio is a short drive from these communities.</p></div>
     <div class="areas">{chips}</div>
+  </div>
+</section>
+"""
+
+def local_section(slug, name):
+    t = TOWN_INFO[slug.replace("headshots-in-", "")]
+    paras = "".join(f"<p>{e(x)}</p>" for x in t["intro"])
+    hl = "".join(f'<span class="chip">{icon("pin")} {e(x)}</span>' for x in t["highlights"])
+    names = dict((s.replace("headshots-in-", ""), n) for s, n in TOWNS)
+    nb = "".join(f'<a href="/headshots-in-{x}/">Headshots in {names[x]}</a>' for x in t["neighbors"] if x in names and x != slug.replace("headshots-in-", ""))
+    return f"""<section class="section" id="local">
+  <div class="wrap local-grid">
+    <div class="local-text">
+      <span class="eyebrow">{icon('pin')} {e(name)}, {t['county']}</span>
+      <h2>Headshots for {e(name)} professionals</h2>
+      <div class="local-copy">{paras}</div>
+      <div class="chips">{hl}</div>
+    </div>
+    <aside class="local-side">
+      <div class="contact-card">
+        <h3>Getting to our studio from {e(name)}</h3>
+        <p>{e(t['route'])}</p>
+        <div class="contact-row"><span class="ic">{icon('pin')}</span><div><small>Studio address</small><b>{ADDRESS}</b></div></div>
+        <a class="btn btn-primary btn-sm" href="{MAPS_URL}" target="_blank" rel="noopener">Get directions from {e(name)}</a>
+      </div>
+      <div class="contact-card nearby"><h3>Nearby areas we serve</h3><div class="areas">{nb}</div></div>
+    </aside>
   </div>
 </section>
 """
@@ -523,13 +574,20 @@ def write(path, body):
     os.makedirs(os.path.dirname(f"{OUT}/{path}") or OUT, exist_ok=True)
     open(f"{OUT}/{path}", "w").write(body)
 
-FAQS = [(it[1], it[2]) for it in [x for s in c["/"]["sections"] for x in s["items"] if x[0] == "faq"]]
+FAQS = [
+    ("What is the turnaround time?", "We deliver all retouched pictures within 24 hours."),
+    ("How many backgrounds can I choose from?", "Unlimited. We shoot on studio backdrops and can change your background digitally to the color you want."),
+    ("Are all photos retouched?", "Yes. Every headshot you choose is edited, retouched and color graded."),
+    ("How long is a session and how many photos do you take?", "1 headshot ($50): a 5-minute session where we take about 5–10 photos in different poses and you pick 1. 3 headshots ($100): a 10–15 minute session with about 15–20 photos, and you pick 3. 5 headshots ($150): a 30-minute session with about 20–40 photos, and you pick 5. 10 headshots ($250): a 1-hour session with about 40–100 photos, and you pick 10."),
+    ("How do I receive my photos? Do you print them?", "Your retouched, color-graded headshots are emailed to you as digital files. All images are digital only — we do not offer printing."),
+]
 
 def landing(page, place, active_town=None):
     intro = fix(find(page, "paragraph", 0)[1])
     retouch = fix(find(page, "paragraph", 1)[1])
     town = active_town is not None
-    lead = (f"Professional headshots for {place} — corporate, acting, residency and personal branding — at our studio in nearby Totowa, NJ. Retouched and delivered within 24 hours."
+    tinfo = TOWN_INFO[active_town.replace("headshots-in-", "")] if town else None
+    lead = (tinfo["lead"]
             if town else "We use state-of-the-art equipment and techniques to capture stunning, unique headshots tailored to you — corporate, acting, residency and personal branding.")
     qh = [it[1] for sec in c[page]["sections"] for it in sec["items"] if it[0] == "heading" and it[1].strip().startswith('"')][0]
     quote = re.sub(r"\s+", " ", qh.strip().strip('"“” ')).strip()
@@ -540,10 +598,12 @@ def landing(page, place, active_town=None):
     meta = dict(c[page])
     if town:
         meta["title"] = f"Headshots in {place}, NJ | Macro Headshots Studio"
+        meta["desc"] = tinfo["desc"]
+    tfaq = [(q.replace("877-622-4973", PHONE), a) for q, a in tinfo["faqs"]] if town else []
     crumbs = [breadcrumb([("Home", "/"), (f"Headshots in {place}", page)])] if town else []
-    return (head(meta["title"], meta["desc"], page, [faq_ld()] + crumbs, preload="/assets/hero-clients.webp") + nav("/" if page == "/" else None) + hero(place, lead, town) + trust()
-            + services(retouch) + residency() + branding() + gallery() + strengths(intro) + pricing_teaser()
-            + testimonial(quote) + (instagram() if page == "/" else "") + faq() + contact() + areas(active_town, place if town else None) + cta() + footer())
+    return (head(meta["title"], meta["desc"], page, [faq_ld(tfaq)] + crumbs, preload="/assets/hero-clients.webp") + nav("/" if page == "/" else None) + hero(place, lead, town) + trust() + (local_section(active_town, place) if town else "")
+            + services(None if town else retouch, place if town else None) + residency(place if town else None) + branding(place if town else None) + gallery() + strengths(intro if not town else f"Clients from {place} and across North Jersey choose Macro Headshots for fast turnaround, unlimited backgrounds and natural-looking retouching on every photo.") + pricing_teaser() + how_it_works(True)
+            + testimonial(quote) + (instagram() if page == "/" else "") + faq(tfaq) + contact() + areas(active_town, place if town else None) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
 for slug, name in TOWNS:
@@ -551,7 +611,7 @@ for slug, name in TOWNS:
 
 # pricing
 perks = [(IMG["perk_retouch"], "Professional Retouching"), (IMG["perk_reviews"], "5 Star Reviews"),
-         (IMG["perk_delivery"], "Same Day Delivery"), (IMG["perk_backdrops"], "More than 50 Backdrops")]
+         (IMG["perk_delivery"], "Same Day Delivery"), (IMG["perk_backdrops"], "Unlimited Backgrounds")]
 perk_html = "".join(f'<div class="perk"><img src="{s}" alt="" loading="lazy"><b>{t}</b></div>' for s, t in perks)
 m = c["/pricing"]
 write("pricing.html", head(m["title"], m["desc"], "/pricing", [faq_ld(), breadcrumb([("Home", "/"), ("Pricing", "/pricing")])]) + nav("/pricing") + f"""
@@ -564,7 +624,7 @@ write("pricing.html", head(m["title"], m["desc"], "/pricing", [faq_ld(), breadcr
   <div class="perks">{perk_html}</div>
   {price_cards()}
 </div></section>
-""" + faq() + contact() + cta() + footer())
+""" + how_it_works() + faq() + contact() + cta() + footer())
 
 # appointments
 m = c["/appointments"]
@@ -598,7 +658,7 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(
       <aside class="side">
         <div class="contact-card">
           <h3>How it works</h3>
-          <ol class="steps"><li>Send the form with your preferred date and package.</li><li>Our team gets back to you to set the time.</li><li>Come to the studio for your session.</li><li>Get your retouched photos within 24 hours.</li></ol>
+          <ol class="steps"><li>Send the form with your preferred date and package.</li><li>Our team gets back to you to set the time.</li><li>We shoot photos in different poses; you pick your favorites.</li><li>We retouch, color grade and email your digital headshots within 24 hours.</li></ol>
         </div>
         <div class="contact-card">
           <h3>Packages</h3>
