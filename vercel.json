@@ -1,0 +1,5 @@
+{
+  "cleanUrls": true,
+  "redirects": [{ "source": "/home", "destination": "/", "permanent": true }],
+  "rewrites": [{ "source": "/headshots-in-:town/", "destination": "/headshots-in-:town" }]
+}
