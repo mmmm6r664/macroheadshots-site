@@ -507,9 +507,9 @@ def how_it_works(soft=False):
 """
 
 def affordability(soft=False):
-    rows = [("Price", "$250 median per session in New Jersey¹", "$50 for 1 · $100 for 3 · $150 for 5 · $250 for 10"),
-            ("Retouched headshots", "3 or fewer in most packages¹", "1 to 10, you choose the package"),
-            ("What $250 gets you", "About one typical NJ session¹", "10 retouched headshots from a 1-hour session"),
+    rows = [("Price", "$250 median per session in New Jersey", "$50 for 1 · $100 for 3 · $150 for 5 · $250 for 10"),
+            ("Retouched headshots", "3 or fewer in most packages", "1 to 10, you choose the package"),
+            ("What $250 gets you", "About one typical NJ session", "10 retouched headshots from a 1-hour session"),
             ("Retouching & color grading", "Varies by photographer", "Included on every photo you pick"),
             ("Backgrounds", "Varies by photographer", "Unlimited"),
             ("Delivery", "Varies by photographer", "Emailed within 24 hours")]
@@ -521,7 +521,6 @@ def affordability(soft=False):
     <div class="cmp-table"><table>
       <thead><tr><th></th><th>Typical headshot photographer</th><th class="us">Macro Headshots</th></tr></thead>
       <tbody>{tr}</tbody></table></div>
-    <p class="cmp-note">¹ <a href="https://www.headshotpro.com/blog/how-much-does-a-headshot-cost" target="_blank" rel="noopener">HeadshotPro survey of 751 photographer websites</a> (data updated January 2025): New Jersey median session price $250; 66% of packages include 3 or fewer headshots. Nationally, Thumbtack estimates an average of about $304 per headshot session (<a href="https://magichour.ai/blog/how-much-does-a-headshot-cost" target="_blank" rel="noopener">as reported by Magic Hour</a>). Prices vary by photographer.</p>
   </div>
 </section>
 """
