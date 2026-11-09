@@ -183,7 +183,7 @@ def faq_ld(extra=()):
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in list(extra) + FAQS]}
 
 def nav(active):
-    links = [("/", "Home"), ("/gallery", "Gallery"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
+    links = [("/", "Home"), ("/#gallery", "Gallery"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
     items = "".join(f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in links)
     return f"""<header class="nav" id="nav">
   <div class="nav-inner">
@@ -216,7 +216,7 @@ def footer():
       </div>
       <div>
         <h4>Studio</h4>
-        <ul><li><a href="/">Home</a></li><li><a href="/gallery">Gallery</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#personal-branding">Personal Branding Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
+        <ul><li><a href="/">Home</a></li><li><a href="/#gallery">Gallery</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#personal-branding">Personal Branding Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
       </div>
       <div>
         <h4>Locations We Serve</h4>
@@ -278,6 +278,7 @@ def bullets(items):
     return "<ul>" + "".join(f"<li>{icon('check')}<span>{x}</span></li>" for x in items) + "</ul>"
 
 def services(retouch_text, place=None):
+    gph = lambda n, cap: f'<div class="ph"><img src="/assets/gallery/{n}.webp" alt="{cap} headshot by Macro Headshots" loading="lazy"><div class="ph-cap">{cap}<span class="arrow-btn">{icon("arrow")}</span></div></div>'
     ig = lambda i, cap: f'<div class="ph"><img src="{IG[i]}" alt="{cap} headshot by Macro Headshots" loading="lazy"><div class="ph-cap">{cap}<span class="arrow-btn">{icon("arrow")}</span></div></div>'
     return f"""<section class="section" id="services">
   <div class="wrap">
@@ -291,7 +292,7 @@ def services(retouch_text, place=None):
         <div class="stack-top"><div class="stack-label"><div><span class="stack-num">1/3</span><div class="stack-icon">{icon('briefcase')}</div></div><h3>Corporate<br>headshots</h3></div><a class="btn btn-white btn-sm" href="/appointments">Book now</a></div>
         <div class="stack-body">
           <div class="stack-text"><p>For business professionals who want a polished, confident image for LinkedIn, company websites and team pages.</p>{bullets(['A comfortable, relaxed studio so you feel at ease', 'Unlimited backgrounds — studio backdrops or digital background changes', 'Every photo retouched and delivered within 24 hours'])}</div>
-          <div class="stack-media">{ig(4,'Professional')}{ig(3,'Corporate')}{ig(11,'Executive')}</div>
+          <div class="stack-media">{gph('headshot-20b','Professional')}{gph('headshot-05a','Corporate')}{gph('headshot-12a','Executive')}</div>
         </div>
       </article>
       <article class="stack-card">
@@ -384,14 +385,18 @@ def strengths(about):
 """
 
 def gallery():
-    photos = [f"/assets/gallery/{x[0]}" for x in GALLERY if x[0].endswith("a.webp")][:22]
-    figs = "".join(f'<figure><img src="{p}" alt="Recent headshot session at Macro Headshots" loading="lazy"></figure>' for p in photos)
+    alt = {"studio": "Studio headshot", "location": "On-location headshot", "medical": "Medical professional headshot"}
+    fig = lambda x: f'<figure><img src="/assets/gallery/{x[0]}" alt="{alt[x[3]]} by Macro Headshots" width="{x[1]}" height="{x[2]}" loading="lazy" decoding="async"></figure>'
+    row1 = [x for x in GALLERY if x[0][-6] == "a"]
+    row2 = [x for x in GALLERY if x[0][-6] != "a"]
+    r1 = "".join(fig(x) for x in row1); r2 = "".join(fig(x) for x in row2)
     return f"""<section class="section soft" id="gallery">
   <div class="wrap">
-    <div class="section-head head-split"><div><span class="eyebrow">Recent sessions</span><h2>Real clients, real results</h2></div>
-    <p class="lead">A few of the people who stepped into our Totowa studio. <a href="/gallery" style="color:var(--brand);font-weight:600">See the full gallery →</a></p></div>
+    <div class="section-head head-split"><div><span class="eyebrow">{icon('image')} Client gallery</span><h2>Real clients, real results</h2></div>
+    <p class="lead">Corporate, personal branding, on-location and medical professional headshots from recent sessions at Macro Headshots. Follow more work on <a href="{IG_URL}" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600">Instagram @macroheadshots</a>.</p></div>
   </div>
-  <div class="marquee"><div class="marquee-track">{figs}{figs}</div></div>
+  <div class="marquee"><div class="marquee-track">{r1}{r1}</div></div>
+  <div class="marquee reverse" style="margin-top:18px"><div class="marquee-track">{r2}{r2}</div></div>
 </section>
 """
 
@@ -685,35 +690,6 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(
 """ + gallery() + strengths(fix(find("/", "paragraph", 0)[1])) + faq() + cta() + footer())
 
 
-# ---------- gallery page ----------
-cats = [("all", "All"), ("studio", "Studio"), ("location", "On location"), ("medical", "Medical")]
-chips = "".join(f'<button type="button" class="filter{" active" if k == "all" else ""}" data-filter="{k}">{t}</button>' for k, t in cats)
-alts = {"studio": "Studio headshot", "location": "On-location headshot", "medical": "Medical professional headshot"}
-ORDERED = sorted(GALLERY, key=lambda x: (x[0][-6], x[0]))
-items = "".join(f'<figure class="g-item" data-cat="{c}"><img src="/assets/gallery/{n}" alt="{alts[c]} by Macro Headshots" width="{w}" height="{h}" loading="lazy" decoding="async"></figure>' for n, w, h, c in ORDERED)
-gal_ld = {"@context": "https://schema.org", "@type": "ImageGallery", "name": "Macro Headshots client gallery", "url": canon("/gallery"),
-          "image": [SITE + f"/assets/gallery/{x[0]}" for x in GALLERY[:30]]}
-write("gallery.html", head("Headshot Gallery | Macro Headshots, Totowa NJ", "See real client headshots from Macro Headshots in Totowa, NJ: corporate, personal branding, on-location and medical professional portraits.", "/gallery",
-      [gal_ld, breadcrumb([("Home", "/"), ("Gallery", "/gallery")])]) + nav("/gallery") + f"""
-<section class="page-hero">{BLOBS}
-  <div class="wrap"><span class="eyebrow">{icon('image')} Client gallery</span><h1>Real clients, <span style="color:var(--brand)">real results</span></h1>
-  <p class="lead">A selection of headshots from recent sessions — corporate, personal branding, on-location and medical professionals.</p>
-  <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="/appointments">Book your session</a><a class="btn btn-outline" href="/pricing">See pricing</a></div></div>
-</section>
-<section class="section soft" style="padding-top:48px">
-  <div class="wrap">
-    <div class="filters" role="toolbar" aria-label="Filter photos">{chips}</div>
-    <div class="masonry" id="gallery-grid">{items}</div>
-  </div>
-</section>
-<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
-  <button type="button" class="lb-close" aria-label="Close">×</button>
-  <button type="button" class="lb-prev" aria-label="Previous photo">‹</button>
-  <img alt="">
-  <button type="button" class="lb-next" aria-label="Next photo">›</button>
-</div>
-""" + cta() + footer())
-
 # ---------- legal pages ----------
 UPDATED = "November 9, 2026"
 def legal_page(slug, title, desc, h1, body):
@@ -815,8 +791,8 @@ og.paste(logo, (60, 235), logo)
 og.save(f"{OUT}/assets/og-image.jpg", quality=86)
 
 # ---------- sitemap & robots ----------
-paths = ["/", "/gallery", "/pricing", "/appointments"] + [f"/{s}/" for s, _ in TOWNS] + ["/privacy-policy", "/cookie-policy"]
-prio = {"/": "1.0", "/gallery": "0.8", "/appointments": "0.9", "/pricing": "0.9", "/privacy-policy": "0.2", "/cookie-policy": "0.2"}
+paths = ["/", "/pricing", "/appointments"] + [f"/{s}/" for s, _ in TOWNS] + ["/privacy-policy", "/cookie-policy"]
+prio = {"/": "1.0", "/appointments": "0.9", "/pricing": "0.9", "/privacy-policy": "0.2", "/cookie-policy": "0.2"}
 urls = "".join(f"<url><loc>{canon(x)}</loc><lastmod>2026-11-09</lastmod><priority>{prio.get(x, '0.7')}</priority></url>" for x in paths)
 open(f"{OUT}/sitemap.xml", "w").write(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
 open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
@@ -851,7 +827,7 @@ json.dump({"cleanUrls": True,
            "headers": [{"source": "/(.*)", "headers": SEC},
                        {"source": "/assets/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400"}]},
                        {"source": "/(css|js)/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=86400, must-revalidate"}]}],
-           "redirects": [{"source": "/home", "destination": "/", "permanent": True}],
+           "redirects": [{"source": "/home", "destination": "/", "permanent": True}, {"source": "/gallery", "destination": "/#gallery", "permanent": True}],
            "rewrites": [{"source": "/headshots-in-:town/", "destination": "/headshots-in-:town"}]},
           open(f"{OUT}/vercel.json", "w"), indent=2)
 print("pages:", 3 + len(TOWNS), "assets:", len(os.listdir(f"{OUT}/assets")))
