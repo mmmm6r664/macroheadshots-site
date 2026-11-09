@@ -540,11 +540,11 @@ def faq(extra=()):
 """
 
 def directions():
-    steps = [("/assets/directions-1.webp", "Step 1: park and walk to the end of the building",
-              "From the parking lot, go straight along the building, then take a left at the end of the building.",
-              "Parking lot at 195 US-46 in Totowa with an arrow showing the walk along the building to the left turn"),
-             ("/assets/directions-2.webp", "Step 2: use the office entrance to the second floor",
-              "The Macro Headshots office entrance is at the corner of the building. We are on the second floor, Suite 9.",
+    steps = [("/assets/directions-1.webp", "Step 1: drive to the end of the plaza",
+              "Go straight along the front of the building, then take a left at the end of the building. There is parking there at the end of the plaza.",
+              "Plaza at 195 US-46 in Totowa with an arrow showing the drive along the building and the left turn at the end"),
+             ("/assets/directions-2.webp", "Step 2: park and use the office entrance",
+              "Park at the end of the plaza. The Macro Headshots office entrance is at the corner of the building. We are on the second floor, Suite 9.",
               "Corner of the building at 195 US-46 with an arrow pointing to the Macro Headshots office entrance")]
     cards = "".join(f'<figure class="dir-card"><img src="{src}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async"><figcaption><b>{t}</b><span>{d}</span></figcaption></figure>' for src, t, d, alt in steps)
     return f"""<div class="dir-block" id="directions"><h3>Finding our entrance</h3><div class="dir-grid">{cards}</div></div>"""
