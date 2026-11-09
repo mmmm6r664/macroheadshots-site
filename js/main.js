@@ -87,3 +87,29 @@
   lb.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
   lb.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1)); x0 = null; });
 })();
+
+// ----- scroll reveal (only for content below the fold, so nothing visible ever flickers) -----
+(function () {
+  if (!('IntersectionObserver' in window)) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var sel = '.section-head,.price-card,.hiw-step,.stat-card,.review-card,.guide-card,.svc-card,.town-card,.brand-tile,' +
+            '.info-card,.dir-card,.stack-card,.faq details,.cta-band,.contact-card,.map-card,.cmp-table,.res-band,' +
+            '.svc-gallery figure,.g-item,.local-text,.local-side,.split-media,.split > div,.quote-band,.hiw-table,.prose';
+  var els = Array.prototype.slice.call(document.querySelectorAll(sel));
+  var vh = window.innerHeight || 800;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+  els.forEach(function (el) {
+    if (el.closest('.hero') || el.closest('.reveal')) return;
+    var par = el.parentNode;
+    if (par && par.scrollWidth > par.clientWidth + 4) return; // inside a swipe carousel
+    if (el.getBoundingClientRect().top < vh * 0.92) return; // already on screen: leave as is
+    var sibs = el.parentNode ? Array.prototype.indexOf.call(el.parentNode.children, el) : 0;
+    el.style.setProperty('--d', Math.min(sibs, 5) * 70 + 'ms');
+    el.classList.add('reveal');
+    io.observe(el);
+  });
+})();
