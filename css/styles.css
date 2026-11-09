@@ -569,3 +569,6 @@ p{margin:0}
   .review-grid::-webkit-scrollbar{display:none}
   .review-card{flex:0 0 82%;scroll-snap-align:start}
 }
+.info-card ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;font-size:15.5px;color:var(--ink)}
+.info-card li{display:flex;gap:10px;align-items:flex-start;line-height:1.5}
+li>svg{width:20px;height:20px;flex:none;color:var(--brand);margin-top:2px}
