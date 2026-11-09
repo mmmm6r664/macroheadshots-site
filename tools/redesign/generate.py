@@ -11,6 +11,9 @@ shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(f"{OUT}/assets"); os.makedirs(f"{OUT}/css"); os.makedirs(f"{OUT}/js")
 shutil.copy(f"{HERE}/styles.css", f"{OUT}/css/styles.css")
 shutil.copy(f"{HERE}/main.js", f"{OUT}/js/main.js")
+import hashlib as _h
+CSS_V = _h.sha1(open(f"{HERE}/styles.css", "rb").read()).hexdigest()[:10]
+JS_V = _h.sha1(open(f"{HERE}/main.js", "rb").read()).hexdigest()[:10]
 shutil.copy(f"{BRAND}/logo-dark.png", f"{OUT}/assets/logo-dark.png")
 shutil.copy(f"{BRAND}/logo-light.png", f"{OUT}/assets/logo-light.png")
 shutil.copy(f"{BRAND}/hero-clients.webp", f"{OUT}/assets/hero-clients.webp")
@@ -167,7 +170,7 @@ def head(title, desc, path, extra_ld=(), preload=None, robots="index,follow"):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 {pre}
-<link rel="stylesheet" href="/css/styles.css">
+<link rel="stylesheet" href="/css/styles.css?v={CSS_V}">
 {ld(BUSINESS_LD)}{extra}
 </head>
 <body>
@@ -231,7 +234,7 @@ def footer():
   <div class="cookie-actions"><button type="button" class="btn btn-outline btn-sm" data-consent="necessary">Necessary only</button><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept all</button></div>
 </div>
 <div class="mobile-bar"><a class="btn btn-outline" href="{PHONE_TEL}">Call</a><a class="btn btn-primary" href="/appointments">Book Now</a></div>
-<script src="/js/main.js" defer></script>
+<script src="/js/main.js?v={JS_V}" defer></script>
 </body>
 </html>
 """
@@ -825,8 +828,8 @@ SEC = [
 ]
 json.dump({"cleanUrls": True,
            "headers": [{"source": "/(.*)", "headers": SEC},
-                       {"source": "/assets/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400"}]},
-                       {"source": "/(css|js)/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=86400, must-revalidate"}]}],
+                       {"source": "/assets/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800"}]},
+                       {"source": "/(css|js)/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}]}],
            "redirects": [{"source": "/home", "destination": "/", "permanent": True}, {"source": "/gallery", "destination": "/#gallery", "permanent": True}],
            "rewrites": [{"source": "/headshots-in-:town/", "destination": "/headshots-in-:town"}]},
           open(f"{OUT}/vercel.json", "w"), indent=2)
