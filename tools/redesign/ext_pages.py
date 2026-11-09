@@ -198,7 +198,7 @@ write("locations.html", head("Locations | Macro Headshots Studio in Totowa, NJ",
     <div style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn btn-primary" href="/appointments">Book a session</a><a class="btn btn-outline" href="{MAPS_URL}" target="_blank" rel="noopener">Get directions</a><a class="btn btn-outline" href="/headshots-in-totowa/">Headshots in Totowa</a></div>
   </div>
   <a class="map-card" href="{MAPS_URL}" target="_blank" rel="noopener" aria-label="Open the studio in Google Maps">{mp}<span class="pin"><b>Macro Headshots</b><br>195 US-46, Totowa, NJ</span></a>
-</div></section>
+</div><div class="wrap">{directions()}</div></section>
 <section class="section"><div class="wrap"><div class="section-head"><span class="eyebrow">Nearby service areas</span><h2>Headshots near you</h2><p class="lead">We have one studio, in Totowa. Clients from these towns come to us; pick yours for directions and local details. Teams of 10 or more within 30 miles can also book an <a href="/team-headshots/" style="color:var(--brand);font-weight:600">on-location session</a>.</p></div>
 <div class="town-grid">{tcards}</div></div></section>
 """ + cta() + footer())

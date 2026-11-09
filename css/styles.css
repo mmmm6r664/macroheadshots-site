@@ -549,3 +549,11 @@ p{margin:0}
   .brand-tile img{aspect-ratio:1/1!important;height:auto!important;max-height:240px}
 }
 .nav-links{align-items:center}
+.dir-block{margin-top:34px}
+.dir-block h3{font-size:22px;margin-bottom:16px}
+.dir-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.dir-card{margin:0;background:#fff;border-radius:var(--radius);overflow:hidden}
+.dir-card img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.dir-card figcaption{padding:16px 20px;display:flex;flex-direction:column;gap:4px;font-size:15px;line-height:1.5}
+.dir-card figcaption span{color:var(--muted)}
+@media (max-width:760px){.dir-grid{grid-template-columns:1fr}}

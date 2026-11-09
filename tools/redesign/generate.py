@@ -18,6 +18,7 @@ shutil.copy(f"{BRAND}/logo-dark.png", f"{OUT}/assets/logo-dark.png")
 shutil.copy(f"{BRAND}/logo-light.png", f"{OUT}/assets/logo-light.png")
 shutil.copy(f"{BRAND}/hero-clients.webp", f"{OUT}/assets/hero-clients.webp")
 shutil.copy(f"{BRAND}/eras-sample.jpg", f"{OUT}/assets/eras-sample.jpg")
+for _d in ("directions-1", "directions-2"): shutil.copy(f"{BRAND}/{_d}.webp", f"{OUT}/assets/{_d}.webp")
 ERAS_KB = round(os.path.getsize(f"{BRAND}/eras-sample.jpg") / 1024)
 
 _files = os.listdir(ASSETS_SRC)
@@ -538,6 +539,16 @@ def faq(extra=()):
 </section>
 """
 
+def directions():
+    steps = [("/assets/directions-1.webp", "Step 1: park and walk to the end of the building",
+              "From the parking lot, go straight along the building, then take a left at the end of the building.",
+              "Parking lot at 195 US-46 in Totowa with an arrow showing the walk along the building to the left turn"),
+             ("/assets/directions-2.webp", "Step 2: use the office entrance to the second floor",
+              "The Macro Headshots office entrance is at the corner of the building. We are on the second floor, Suite 9.",
+              "Corner of the building at 195 US-46 with an arrow pointing to the Macro Headshots office entrance")]
+    cards = "".join(f'<figure class="dir-card"><img src="{src}" alt="{alt}" width="1200" height="800" loading="lazy" decoding="async"><figcaption><b>{t}</b><span>{d}</span></figcaption></figure>' for src, t, d, alt in steps)
+    return f"""<div class="dir-block" id="directions"><h3>Finding our entrance</h3><div class="dir-grid">{cards}</div></div>"""
+
 def contact():
     mp = f'<img src="{MAP}" alt="Map showing Macro Headshots studio in Totowa, NJ" loading="lazy">' if MAP else ""
     return f"""<section class="section soft" id="contact">
@@ -551,6 +562,7 @@ def contact():
       </div>
       <a class="map-card" href="{MAPS_URL}" target="_blank" rel="noopener" aria-label="Open the studio in Google Maps">{mp}<span class="pin"><b>Macro Headshots</b><br>195 US-46, Totowa, NJ</span></a>
     </div>
+    {directions()}
   </div>
 </section>
 """
@@ -752,6 +764,7 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(
         </div>
       </aside>
     </div>
+    {directions()}
   </div>
 </section>
 """ + gallery() + strengths(fix(find("/", "paragraph", 0)[1])) + faq() + cta() + footer())
