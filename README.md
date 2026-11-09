@@ -1,7 +1,17 @@
 # Macro Headshots website
 
-Static copy of macroheadshots.com (Home, Appointments, Pricing and 16 local-area pages),
-with every image hosted in `assets/`. The appointment form is the live HighLevel form embed,
-so submissions still reach the CRM. Deploys on Vercel as a plain static site (no build step).
+Redesign of macroheadshots.com in a clean, modern style (floating pill navigation, soft gradient hero,
+stacked gradient service cards, purple accents, black footer). All 19 pages: Home, Pricing,
+Appointments and 16 "Headshots in …" local pages, with the original copy, photos and SEO titles.
 
-`tools/build.py` regenerates the site from a browser capture of the original (`python3 tools/build.py capture.json out/`).
+- The appointment form is the live HighLevel form embed, so submissions still reach the CRM.
+- Google reviews (Elfsight) and the Instagram feed are kept.
+- Static site, no build step. Deploys on Vercel.
+
+## Regenerating
+
+`tools/redesign/generate.py` builds the pages from content captured from the original site:
+
+    python3 tools/redesign/generate.py capture/content.json <original-assets-dir> tools/brand out/
+
+Styles live in `tools/redesign/styles.css` (copied to `css/styles.css`).

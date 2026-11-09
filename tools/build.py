@@ -49,7 +49,7 @@ for url, body in d["css"].items():
     css_map[url] = f"/css/{name}"
 
 FORM_EMBED = (f'<iframe src="https://api.leadconnectorhq.com/widget/form/{FORM_ID}" '
-              f'style="width:100%;height:100%;min-height:960px;border:none;border-radius:0px" '
+              f'style="width:100%;height:100%;min-height:560px;border:none;border-radius:0px" '
               f'id="inline-{FORM_ID}" data-layout="{{\'id\':\'INLINE\'}}" data-trigger-type="alwaysShow" '
               f'data-activation-type="alwaysActivated" data-deactivation-type="neverDeactivate" '
               f'data-form-id="{FORM_ID}" title="Appointments form"></iframe>'
