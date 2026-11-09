@@ -119,7 +119,7 @@ def head(title, desc, path):
 """
 
 def nav(active):
-    links = [("/", "Home"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
+    links = [("/", "Home"), ("/#residency", "Residency"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
     items = "".join(f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in links)
     return f"""<header class="nav" id="nav">
   <div class="nav-inner">
@@ -152,7 +152,7 @@ def footer():
       </div>
       <div>
         <h4>Studio</h4>
-        <ul><li><a href="/">Home</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
+        <ul><li><a href="/">Home</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
       </div>
       <div>
         <h4>Locations We Serve</h4>
@@ -240,6 +240,34 @@ def services(retouch_text):
           <div class="stack-media one"><div class="ph"><img src="{IMG['retouch']}" alt="Before and after headshot retouching" loading="lazy"><div class="ph-cap">Before → After<span class="arrow-btn">{icon('arrow')}</span></div></div></div>
         </div>
       </article>
+    </div>
+  </div>
+</section>
+"""
+
+def residency():
+    specs = [("2.5 × 3.5 in", "Passport-size portrait"), ("375 × 525 px", "At 150 dpi"), ("JPG, ≤ 150 KB", "Upload-ready file"), ("Color, centered", "Head &amp; shoulders")]
+    spec_html = "".join(f'<div class="spec"><b>{a}</b><small>{b}</small></div>' for a, b in specs)
+    return f"""<section class="section" id="residency">
+  <div class="wrap">
+    <div class="res-band">
+      <div class="res-text">
+        <span class="eyebrow">{icon('briefcase')} Residency headshots</span>
+        <h2>Residency &amp; ERAS headshots for medical applicants</h2>
+        <p class="lead">Your photo is one of the first things program directors see on your residency application. We photograph you in a polished, business-professional style on a clean backdrop, then deliver a version sized for the ERAS upload alongside your full-resolution, retouched images.</p>
+        <div class="specs">{spec_html}</div>
+        {bullets(['Quick sessions — the 5-minute package starts at $50', 'Retouched and delivered within 24 hours, in time for application deadlines', 'Plain light backdrop and centered framing that suits ERAS'])}
+        <div class="hero-actions"><a class="btn btn-primary" href="/appointments">Book a residency headshot</a><a class="btn btn-outline" href="{PHONE_TEL}">Ask a question</a></div>
+      </div>
+      <div class="res-visual">
+        <div class="eras-card">
+          <div class="eras-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="eras-title">Application photo</span></div>
+          <div class="eras-photo"><span class="dim dim-w">2.5 in</span><span class="dim dim-h">3.5 in</span><img src="{IG[5]}" alt="Example residency headshot on a plain backdrop" loading="lazy"></div>
+          <div class="eras-meta"><span>photo.jpg</span><span>375 × 525 px</span></div>
+        </div>
+        <div class="float-card rc1"><span class="ic ok">{icon('check')}</span><div><b>Upload-ready</b><small>JPG under 150 KB</small></div></div>
+        <div class="float-card rc2"><span class="ic">{icon('clock')}</span><div><b>Delivered in 24 hours</b><small>retouched</small></div></div>
+      </div>
     </div>
   </div>
 </section>
@@ -410,7 +438,7 @@ def landing(page, place, active_town=None):
         quote += "."
     meta = c[page]
     return (head(meta["title"], meta["desc"], page) + nav("/" if page == "/" else None) + hero(place, lead) + trust()
-            + services(retouch) + gallery() + strengths(intro) + pricing_teaser()
+            + services(retouch) + residency() + gallery() + strengths(intro) + pricing_teaser()
             + testimonial(quote) + (instagram() if page == "/" else "") + faq() + contact() + areas(active_town) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
