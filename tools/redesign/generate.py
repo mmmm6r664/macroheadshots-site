@@ -712,7 +712,7 @@ for slug, name in TOWNS:
     write(f"{slug}.html", landing(f"/{slug}/", name, slug))
 
 # pricing
-perks = [("wand", "Professional Retouching"), ("sparkle", "Highly Rated on Google"),
+perks = [("wand", "Professional Retouching"), ("sparkle", "5-Star Rated on Google"),
          ("clock", "Delivered Within 24 Hours"), ("layers", "Unlimited Backgrounds")]
 perk_html = "".join(f'<div class="perk"><span class="perk-ic">{icon(i)}</span><b>{t}</b></div>' for i, t in perks)
 m = c["/pricing"]
