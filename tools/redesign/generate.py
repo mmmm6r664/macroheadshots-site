@@ -178,7 +178,7 @@ def faq_ld(extra=()):
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in list(extra) + FAQS]}
 
 def nav(active):
-    links = [("/", "Home"), ("/#residency", "Residency"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
+    links = [("/", "Home"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
     items = "".join(f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in links)
     return f"""<header class="nav" id="nav">
   <div class="nav-inner">
