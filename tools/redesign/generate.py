@@ -37,6 +37,11 @@ IMG = {
     "perk_delivery": asset("66febe601f683282c3aeafa4", "icon-delivery"),
     "perk_backdrops": asset("66febe60b27ab0e9b1cb2ea4", "icon-backdrops"),
 }
+GAL_DIR = os.path.join(HERE, "..", "gallery")
+GALLERY = json.load(open(os.path.join(GAL_DIR, "manifest.json")))
+os.makedirs(f"{OUT}/assets/gallery", exist_ok=True)
+for _n, *_ in GALLERY:
+    shutil.copy(os.path.join(GAL_DIR, _n), f"{OUT}/assets/gallery/{_n}")
 IG_DIR = os.path.join(HERE, "..", "instagram")
 IG = []
 for f in sorted(os.listdir(IG_DIR)):
@@ -178,7 +183,7 @@ def faq_ld(extra=()):
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in list(extra) + FAQS]}
 
 def nav(active):
-    links = [("/", "Home"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
+    links = [("/", "Home"), ("/gallery", "Gallery"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
     items = "".join(f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in links)
     return f"""<header class="nav" id="nav">
   <div class="nav-inner">
@@ -211,7 +216,7 @@ def footer():
       </div>
       <div>
         <h4>Studio</h4>
-        <ul><li><a href="/">Home</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#personal-branding">Personal Branding Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
+        <ul><li><a href="/">Home</a></li><li><a href="/gallery">Gallery</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#personal-branding">Personal Branding Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
       </div>
       <div>
         <h4>Locations We Serve</h4>
@@ -379,12 +384,12 @@ def strengths(about):
 """
 
 def gallery():
-    photos = IG + [IMG["g1"], IMG["g2"], IMG["g3"]]
+    photos = [f"/assets/gallery/{x[0]}" for x in GALLERY if x[0].endswith("a.webp")][:22]
     figs = "".join(f'<figure><img src="{p}" alt="Recent headshot session at Macro Headshots" loading="lazy"></figure>' for p in photos)
     return f"""<section class="section soft" id="gallery">
   <div class="wrap">
     <div class="section-head head-split"><div><span class="eyebrow">Recent sessions</span><h2>Real clients, real results</h2></div>
-    <p class="lead">A few of the people who stepped into our Totowa studio recently. See more on <a href="{IG_URL}" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600">Instagram @macroheadshots</a>.</p></div>
+    <p class="lead">A few of the people who stepped into our Totowa studio. <a href="/gallery" style="color:var(--brand);font-weight:600">See the full gallery →</a></p></div>
   </div>
   <div class="marquee"><div class="marquee-track">{figs}{figs}</div></div>
 </section>
@@ -679,6 +684,36 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(
 </section>
 """ + gallery() + strengths(fix(find("/", "paragraph", 0)[1])) + faq() + cta() + footer())
 
+
+# ---------- gallery page ----------
+cats = [("all", "All"), ("studio", "Studio"), ("location", "On location"), ("medical", "Medical")]
+chips = "".join(f'<button type="button" class="filter{" active" if k == "all" else ""}" data-filter="{k}">{t}</button>' for k, t in cats)
+alts = {"studio": "Studio headshot", "location": "On-location headshot", "medical": "Medical professional headshot"}
+ORDERED = sorted(GALLERY, key=lambda x: (x[0][-6], x[0]))
+items = "".join(f'<figure class="g-item" data-cat="{c}"><img src="/assets/gallery/{n}" alt="{alts[c]} by Macro Headshots" width="{w}" height="{h}" loading="lazy" decoding="async"></figure>' for n, w, h, c in ORDERED)
+gal_ld = {"@context": "https://schema.org", "@type": "ImageGallery", "name": "Macro Headshots client gallery", "url": canon("/gallery"),
+          "image": [SITE + f"/assets/gallery/{x[0]}" for x in GALLERY[:30]]}
+write("gallery.html", head("Headshot Gallery | Macro Headshots, Totowa NJ", "See real client headshots from Macro Headshots in Totowa, NJ: corporate, personal branding, on-location and medical professional portraits.", "/gallery",
+      [gal_ld, breadcrumb([("Home", "/"), ("Gallery", "/gallery")])]) + nav("/gallery") + f"""
+<section class="page-hero">{BLOBS}
+  <div class="wrap"><span class="eyebrow">{icon('image')} Client gallery</span><h1>Real clients, <span style="color:var(--brand)">real results</span></h1>
+  <p class="lead">A selection of headshots from recent sessions — corporate, personal branding, on-location and medical professionals.</p>
+  <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="/appointments">Book your session</a><a class="btn btn-outline" href="/pricing">See pricing</a></div></div>
+</section>
+<section class="section soft" style="padding-top:48px">
+  <div class="wrap">
+    <div class="filters" role="toolbar" aria-label="Filter photos">{chips}</div>
+    <div class="masonry" id="gallery-grid">{items}</div>
+  </div>
+</section>
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button type="button" class="lb-close" aria-label="Close">×</button>
+  <button type="button" class="lb-prev" aria-label="Previous photo">‹</button>
+  <img alt="">
+  <button type="button" class="lb-next" aria-label="Next photo">›</button>
+</div>
+""" + cta() + footer())
+
 # ---------- legal pages ----------
 UPDATED = "November 9, 2026"
 def legal_page(slug, title, desc, h1, body):
@@ -780,8 +815,8 @@ og.paste(logo, (60, 235), logo)
 og.save(f"{OUT}/assets/og-image.jpg", quality=86)
 
 # ---------- sitemap & robots ----------
-paths = ["/", "/pricing", "/appointments"] + [f"/{s}/" for s, _ in TOWNS] + ["/privacy-policy", "/cookie-policy"]
-prio = {"/": "1.0", "/appointments": "0.9", "/pricing": "0.9", "/privacy-policy": "0.2", "/cookie-policy": "0.2"}
+paths = ["/", "/gallery", "/pricing", "/appointments"] + [f"/{s}/" for s, _ in TOWNS] + ["/privacy-policy", "/cookie-policy"]
+prio = {"/": "1.0", "/gallery": "0.8", "/appointments": "0.9", "/pricing": "0.9", "/privacy-policy": "0.2", "/cookie-policy": "0.2"}
 urls = "".join(f"<url><loc>{canon(x)}</loc><lastmod>2026-11-09</lastmod><priority>{prio.get(x, '0.7')}</priority></url>" for x in paths)
 open(f"{OUT}/sitemap.xml", "w").write(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
 open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
