@@ -112,7 +112,7 @@ p{margin:0}
 .stack-media{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .stack-media.one{grid-template-columns:1fr}
 .stack-media .ph{background:#fff;border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
-.stack-media .ph img{width:100%;height:100%;object-fit:cover;aspect-ratio:3/4}
+.stack-media .ph img{width:100%;height:100%;object-fit:cover;object-position:top;aspect-ratio:3/4}
 .stack-media.one .ph img{aspect-ratio:auto;object-fit:contain;max-height:380px;background:#fff}
 .stack-media.one .ph img.crop-right{object-fit:cover;object-position:right center;aspect-ratio:16/10;max-height:none}
 .ph-cap{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;font-weight:600;color:var(--ink)}
@@ -132,6 +132,15 @@ p{margin:0}
 .gallery figure{margin:0;border-radius:var(--radius);overflow:hidden;background:var(--bg-soft);position:relative}
 .gallery img{width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform .5s}
 .gallery figure:hover img{transform:scale(1.04)}
+
+/* marquee of recent sessions */
+.marquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marquee-track{display:flex;gap:18px;width:max-content;animation:marquee 60s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee figure{margin:0;width:240px;flex:none;border-radius:var(--radius);overflow:hidden;background:#fff;box-shadow:var(--shadow-sm)}
+.marquee img{width:100%;aspect-ratio:4/5;object-fit:cover}
+@keyframes marquee{to{transform:translateX(calc(-50% - 9px))}}
+@media (prefers-reduced-motion:reduce){.marquee-track{animation:none}.marquee{overflow-x:auto}}
 
 /* split feature (retouching) */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
@@ -263,6 +272,7 @@ p{margin:0}
   .trust-inner{flex-direction:column;align-items:flex-start;gap:22px}
   .logos{justify-content:flex-start}
   .logo-tile{height:70px;min-width:100px}
+  .marquee figure{width:170px}
   .stack-card{padding:24px;position:relative;top:auto!important}
   .stack-card h3{font-size:26px}
   .stack-media{grid-template-columns:repeat(3,1fr);gap:8px}

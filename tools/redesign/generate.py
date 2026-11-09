@@ -32,6 +32,12 @@ IMG = {
     "perk_delivery": asset("66febe601f683282c3aeafa4", "icon-delivery"),
     "perk_backdrops": asset("66febe60b27ab0e9b1cb2ea4", "icon-backdrops"),
 }
+IG_DIR = os.path.join(HERE, "..", "instagram")
+IG = []
+for f in sorted(os.listdir(IG_DIR)):
+    shutil.copy(os.path.join(IG_DIR, f), f"{OUT}/assets/{f}")
+    IG.append(f"/assets/{f}")
+
 LOGOS = [
     (asset("67f438d613578e181a3a68e5", "client-hudson-county"), "Hudson County, New Jersey"),
     (asset("67f43900694f31187c4d51f0", "client-city-of-hoboken"), "City of Hoboken"),
@@ -49,7 +55,7 @@ if map_files:
 PHONE, PHONE_TEL = "877-622-4973", "tel:8776224973"
 ADDRESS = "195 US-46, Suite 9, Totowa, New Jersey 07512"
 MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Macro+Headshots+195+US-46+Totowa+NJ&query_place_id=ChIJBQf90R9ZwokR1-oGndIZRCA"
-FB, IG = "https://www.facebook.com/MacroHeadshots", "https://instagram.com/macroheadshots"
+FB, IG_URL = "https://www.facebook.com/MacroHeadshots", "https://instagram.com/macroheadshots"
 FORM_ID = "F39Doj60gH02JaLUfmFP"
 ELFSIGHT = "elfsight-app-c65230f6-0f81-4d8a-9478-d76339342fc4"
 PRICES = [("1 Headshot", "$50", "5 minute session", "Choose between 3–10 shots"),
@@ -106,7 +112,7 @@ def head(title, desc, path):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/styles.css">
-<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"ProfessionalService","name":"Macro Headshots","telephone":"+1-877-622-4973","address":{"@type":"PostalAddress","streetAddress":"195 US-46, Suite 9","addressLocality":"Totowa","addressRegion":"NJ","postalCode":"07512","addressCountry":"US"},"sameAs":[FB,IG]})}</script>
+<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"ProfessionalService","name":"Macro Headshots","telephone":"+1-877-622-4973","address":{"@type":"PostalAddress","streetAddress":"195 US-46, Suite 9","addressLocality":"Totowa","addressRegion":"NJ","postalCode":"07512","addressCountry":"US"},"sameAs":[FB,IG_URL]})}</script>
 </head>
 <body>
 """
@@ -141,7 +147,7 @@ def footer():
           <div>{icon('phone')}<a href="{PHONE_TEL}">{PHONE}</a></div>
           <div>{icon('pin')}<a href="{MAPS_URL}" target="_blank" rel="noopener">Studio: {ADDRESS}</a></div>
         </div>
-        <div class="socials"><a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">{FB_SVG}</a><a href="{IG}" target="_blank" rel="noopener" aria-label="Instagram">{IG_SVG}</a></div>
+        <div class="socials"><a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">{FB_SVG}</a><a href="{IG_URL}" target="_blank" rel="noopener" aria-label="Instagram">{IG_SVG}</a></div>
       </div>
       <div>
         <h4>Studio</h4>
@@ -204,7 +210,7 @@ def bullets(items):
     return "<ul>" + "".join(f"<li>{icon('check')}<span>{x}</span></li>" for x in items) + "</ul>"
 
 def services(retouch_text):
-    g = lambda k, cap: f'<div class="ph"><img src="{IMG[k]}" alt="{cap} headshot by Macro Headshots" loading="lazy"><div class="ph-cap">{cap}<span class="arrow-btn">{icon("arrow")}</span></div></div>'
+    ig = lambda i, cap: f'<div class="ph"><img src="{IG[i]}" alt="{cap} headshot by Macro Headshots" loading="lazy"><div class="ph-cap">{cap}<span class="arrow-btn">{icon("arrow")}</span></div></div>'
     return f"""<section class="section" id="services">
   <div class="wrap">
     <div class="section-head">
@@ -217,14 +223,14 @@ def services(retouch_text):
         <div class="stack-top"><div class="stack-label"><div><span class="stack-num">1/3</span><div class="stack-icon">{icon('briefcase')}</div></div><h3>Corporate<br>headshots</h3></div><a class="btn btn-white btn-sm" href="/appointments">Book now</a></div>
         <div class="stack-body">
           <div class="stack-text"><p>For business professionals who want a polished, confident image for LinkedIn, company websites and team pages.</p>{bullets(['A comfortable, relaxed studio so you feel at ease', 'Choose from 6 backdrops, or change the background digitally', 'Every photo retouched and delivered within 24 hours'])}</div>
-          <div class="stack-media">{g('g1','Professional')}{g('g2','Corporate')}{g('g3','Executive')}</div>
+          <div class="stack-media">{ig(4,'Professional')}{ig(3,'Corporate')}{ig(11,'Executive')}</div>
         </div>
       </article>
       <article class="stack-card">
         <div class="stack-top"><div class="stack-label"><div><span class="stack-num">2/3</span><div class="stack-icon">{icon('mask')}</div></div><h3>Acting<br>headshots</h3></div><a class="btn btn-white btn-sm" href="/appointments">Book now</a></div>
         <div class="stack-body">
           <div class="stack-text"><p>For aspiring and working actors who need headshots that truly capture their personality — and get them noticed.</p>{bullets(['Sessions from 5 to 60 minutes', 'Pick your favourite shots from every session', 'Natural-looking retouching on every image'])}</div>
-          <div class="stack-media one"><div class="ph"><img class="crop-right" src="{IMG['hero']}" alt="Acting and personal branding headshots" loading="lazy"><div class="ph-cap">Personality-driven portraits<span class="arrow-btn">{icon('arrow')}</span></div></div></div>
+          <div class="stack-media">{ig(1,'Actor')}{ig(2,'Lifestyle')}{ig(0,'Personal brand')}</div>
         </div>
       </article>
       <article class="stack-card">
@@ -256,12 +262,14 @@ def strengths(about):
 """
 
 def gallery():
-    figs = "".join(f'<figure><img src="{IMG[k]}" alt="Headshot by Macro Headshots" loading="lazy"></figure>' for k in ("g1", "g2", "g3"))
-    return f"""<section class="section">
+    photos = IG + [IMG["g1"], IMG["g2"], IMG["g3"]]
+    figs = "".join(f'<figure><img src="{p}" alt="Recent headshot session at Macro Headshots" loading="lazy"></figure>' for p in photos)
+    return f"""<section class="section soft" id="gallery">
   <div class="wrap">
-    <div class="section-head center"><span class="eyebrow">Gallery</span><h2>Look at the absolute best you have ever looked</h2></div>
-    <div class="gallery">{figs}</div>
+    <div class="section-head head-split"><div><span class="eyebrow">Recent sessions</span><h2>Real clients, real results</h2></div>
+    <p class="lead">A few of the people who stepped into our Totowa studio recently. See more on <a href="{IG_URL}" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600">Instagram @macroheadshots</a>.</p></div>
   </div>
+  <div class="marquee"><div class="marquee-track">{figs}{figs}</div></div>
 </section>
 """
 
@@ -402,7 +410,7 @@ def landing(page, place, active_town=None):
         quote += "."
     meta = c[page]
     return (head(meta["title"], meta["desc"], page) + nav("/" if page == "/" else None) + hero(place, lead) + trust()
-            + services(retouch) + strengths(intro) + pricing_teaser()
+            + services(retouch) + gallery() + strengths(intro) + pricing_teaser()
             + testimonial(quote) + (instagram() if page == "/" else "") + faq() + contact() + areas(active_town) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
