@@ -95,6 +95,9 @@ for p in c:
         slug = p.strip("/")
         name = slug.replace("headshots-in-", "").replace("-", " ").title()
         TOWNS.append((slug, name))
+for _k in TOWN_INFO:
+    if f"headshots-in-{_k}" not in [t for t, _ in TOWNS]:
+        TOWNS.append((f"headshots-in-{_k}", _k.replace("-", " ").title()))
 TOWNS.sort()
 
 # ---------- icons (simple inline line icons) ----------
@@ -647,6 +650,7 @@ def cta():
 
 # ---------- pages ----------
 def find(page, kind, n=0):
+    if page not in c: page = "/"
     found = [it for s in c[page]["sections"] if not s["mobile"] for it in s["items"] if it[0] == kind]
     return found[n] if len(found) > n else None
 
@@ -692,13 +696,13 @@ def landing(page, place, active_town=None):
     tinfo = TOWN_INFO[active_town.replace("headshots-in-", "")] if town else None
     lead = (tinfo["lead"]
             if town else "We use state-of-the-art equipment and techniques to capture stunning, unique headshots tailored to you — corporate, acting, residency and personal branding.")
-    qh = [it[1] for sec in c[page]["sections"] for it in sec["items"] if it[0] == "heading" and it[1].strip().startswith('"')][0]
+    qh = [it[1] for sec in c[page if page in c else "/"]["sections"] for it in sec["items"] if it[0] == "heading" and it[1].strip().startswith('"')][0]
     quote = re.sub(r"\s+", " ", qh.strip().strip('"“” ')).strip()
     quote = re.sub(r"\bIn\b", "in", quote)
     quote = re.sub(r"\s+Period$", ". Period", quote)
     if not quote.endswith("."):
         quote += "."
-    meta = dict(c[page])
+    meta = dict(c[page if page in c else "/"])
     if town:
         tk = active_town.replace("headshots-in-", "")
         meta["title"] = (f"Headshot Studio in Totowa, NJ | Macro Headshots" if tk == "totowa"

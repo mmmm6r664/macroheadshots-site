@@ -621,3 +621,8 @@ li>svg{width:20px;height:20px;flex:none;color:var(--brand);margin-top:2px}
   .reveal{opacity:1;transform:none}
   @view-transition{navigation:none}
 }
+@media (max-width:760px){
+  .res-visual{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .res-visual .eras-card{width:100%}
+  .res-visual .float-card{position:static;animation:none;flex:1 1 100%;box-shadow:0 4px 14px rgba(20,20,40,.08)}
+}
