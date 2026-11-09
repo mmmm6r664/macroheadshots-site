@@ -16,6 +16,7 @@ CSS_V = _h.sha1(open(f"{HERE}/styles.css", "rb").read()).hexdigest()[:10]
 JS_V = _h.sha1(open(f"{HERE}/main.js", "rb").read()).hexdigest()[:10]
 shutil.copy(f"{BRAND}/logo-dark.png", f"{OUT}/assets/logo-dark.png")
 shutil.copy(f"{BRAND}/logo-light.png", f"{OUT}/assets/logo-light.png")
+for _l in ("logo-new.svg", "logo-new-dark.svg"): shutil.copy(f"{BRAND}/{_l}", f"{OUT}/assets/{_l}")
 shutil.copy(f"{BRAND}/hero-clients.webp", f"{OUT}/assets/hero-clients.webp")
 shutil.copy(f"{BRAND}/eras-sample.jpg", f"{OUT}/assets/eras-sample.jpg")
 for _d in ("directions-1", "directions-2"): shutil.copy(f"{BRAND}/{_d}.webp", f"{OUT}/assets/{_d}.webp")
@@ -210,7 +211,7 @@ def nav(active):
     svc_active = active == "/services" or (active or "").strip("/") in [s for s, _ in SERVICES]
     return f"""<header class="nav" id="nav">
   <div class="nav-inner">
-    <a class="nav-logo" href="/" aria-label="Macro Headshots home"><img src="/assets/logo-light.png" alt="Macro Headshots" width="104" height="38"></a>
+    <a class="nav-logo" href="/" aria-label="Macro Headshots home"><img src="/assets/logo-new.svg" alt="Macro Headshots" width="629" height="240"></a>
     <nav class="nav-links" aria-label="Main">
       <div class="dd"><a href="/services"{" class='active'" if svc_active else ""}>Services</a><div class="dd-menu">{sub}<a href="/services" class="dd-all">All services →</a></div></div>
       {link("/locations", "Locations")}{link("/portfolio", "Portfolio")}{link("/guides", "Guides")}{link("/pricing", "Pricing")}
@@ -238,7 +239,7 @@ def footer():
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <img class="logo" src="/assets/logo-light.png" alt="Macro Headshots" loading="lazy">
+        <img class="logo" src="/assets/logo-new-dark.svg" alt="Macro Headshots" width="629" height="240" loading="lazy">
         <h2 class="fh">Reach Us At</h2>
         <div class="reach">
           <div>{icon('phone')}<a href="{PHONE_TEL}">{PHONE}</a></div>
@@ -899,7 +900,7 @@ json.dump({"name": "Macro Headshots", "short_name": "Macro Headshots", "start_ur
 og = _PIL.new("RGB", (1200, 630), (246, 243, 255))
 col = _PIL.open(f"{BRAND}/hero-clients.webp").convert("RGBA"); col.thumbnail((760, 600))
 og.paste(col, (1200 - col.width - 20, (630 - col.height) // 2), col)
-logo = _PIL.open(f"{BRAND}/logo-dark.png").convert("RGBA"); logo.thumbnail((380, 160))
+logo = _PIL.open(f"{BRAND}/logo-new.png").convert("RGBA"); logo.thumbnail((420, 170))
 og.paste(logo, (60, 235), logo)
 og.save(f"{OUT}/assets/og-image.jpg", quality=86)
 
