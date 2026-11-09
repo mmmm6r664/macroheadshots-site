@@ -177,7 +177,7 @@ write("services.html", head("Headshot Services in NJ | Macro Headshots, Totowa",
       [hub_ld, breadcrumb([("Home", "/"), ("Services", "/services")])]) + nav("/services") + f"""
 <section class="page-hero">{BLOBS}<div class="wrap">{crumbs([("Home", "/"), ("Services", "/services")])}<span class="eyebrow">Services</span><h1>Headshot services in New Jersey</h1>
 <p class="lead">Choose the session that fits what you need the photo for. Every headshot is retouched and emailed within 24 hours.</p></div></section>
-<section class="section soft" style="padding-top:48px"><div class="wrap"><div class="svc-grid">{cards}</div></div></section>
+<section class="section soft" style="padding-top:48px"><div class="wrap"><div class="section-head"><h2>Choose your headshot service</h2></div><div class="svc-grid">{cards}</div></div></section>
 """ + branding() + pricing_teaser() + cta() + footer())
 
 # ---------- /locations hub ----------
@@ -231,7 +231,7 @@ write("guides.html", head("Headshot Guides & FAQs | Macro Headshots, NJ", "Answe
       [faq_ld(), breadcrumb(g_crumb)]) + nav("/guides") + f"""
 <section class="page-hero">{BLOBS}<div class="wrap">{crumbs(g_crumb)}<span class="eyebrow">Guides &amp; FAQs</span><h1>Headshot guides and answers</h1>
 <p class="lead">Straight answers to the questions we hear most, from pricing to what to wear.</p></div></section>
-<section class="section soft" style="padding-top:48px"><div class="wrap"><div class="guide-grid">{gcards}</div></div></section>
+<section class="section soft" style="padding-top:48px"><div class="wrap"><div class="section-head"><h2>All headshot guides</h2></div><div class="guide-grid">{gcards}</div></div></section>
 """ + faq() + cta() + footer())
 
 SVC_FOR_GUIDE = {}

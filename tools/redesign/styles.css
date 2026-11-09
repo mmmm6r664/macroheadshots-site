@@ -572,3 +572,7 @@ p{margin:0}
 .info-card ul{list-style:none;padding:0;margin:0;display:grid;gap:12px;font-size:15.5px;color:var(--ink)}
 .info-card li{display:flex;gap:10px;align-items:flex-start;line-height:1.5}
 li>svg{width:20px;height:20px;flex:none;color:var(--brand);margin-top:2px}
+.price-card{position:relative}
+.price-card.has-badge{padding-top:52px}
+.pc-badge{position:absolute;top:18px;left:24px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:var(--brand-soft);color:var(--brand-dark)}
+.price-card.feature .pc-badge{background:var(--lime);color:#1d1650}

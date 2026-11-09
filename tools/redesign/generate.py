@@ -476,7 +476,8 @@ def price_cards(cta="Book this package"):
     out = []
     for i, (tag, amt, sess, shots) in enumerate(PRICES):
         pk = PICKS[i]
-        out.append(f'<div class="price-card{" feature" if i == 2 else ""}"><span class="tag">{tag}</span><div class="amount">{amt}</div>'
+        badge = {2: "Most Popular", 3: "Recommended"}.get(i, "")
+        out.append(f'<div class="price-card{" feature" if i == 2 else ""}{" has-badge" if badge else ""}">{f'<span class="pc-badge">{badge}</span>' if badge else ""}<span class="tag">{tag}</span><div class="amount">{amt}</div>'
                    f'{bullets([sess, shots, f"You pick your favorite {pk}" if pk > 1 else "You pick your favorite 1", "Retouched, color graded &amp; emailed", "Digital files only"])}'
                    f'<a class="btn {"btn-white" if i == 2 else "btn-primary"}" href="/appointments">{cta}</a></div>')
     return '<div class="price-grid">' + "".join(out) + "</div>"
