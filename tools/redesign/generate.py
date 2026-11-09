@@ -98,32 +98,86 @@ IG_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-widt
 e = html.escape
 
 # ---------- shared chrome ----------
-def head(title, desc, path):
+SITE = "https://macroheadshots.com"
+BUSINESS_LD = {
+    "@context": "https://schema.org", "@type": "ProfessionalService", "@id": SITE + "/#business",
+    "name": "Macro Headshots", "url": SITE + "/", "telephone": "+1-877-622-4973",
+    "image": SITE + "/assets/hero-clients.webp", "logo": SITE + "/assets/icon-512.png",
+    "priceRange": "$50 - $250",
+    "description": "Professional headshot studio in Totowa, NJ: corporate, acting, residency (ERAS) and personal branding headshots, retouched and delivered within 24 hours.",
+    "address": {"@type": "PostalAddress", "streetAddress": "195 US-46, Suite 9", "addressLocality": "Totowa", "addressRegion": "NJ", "postalCode": "07512", "addressCountry": "US"},
+    "areaServed": ["New York Metro Area"] + [n + ", NJ" for _, n in TOWNS],
+    "sameAs": [FB, IG_URL],
+    "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Headshot packages", "itemListElement": [
+        {"@type": "Offer", "name": t, "price": a.strip("$"), "priceCurrency": "USD", "description": f"{s}. {sh}. Professional retouching included.", "url": SITE + "/pricing"}
+        for t, a, s, sh in PRICES]},
+}
+
+def canon(path):
+    return SITE + ("/" if path in ("/", "") else path)
+
+def ld(obj):
+    return '<script type="application/ld+json">' + json.dumps(obj, ensure_ascii=False).replace("</", "<\\/") + "</script>"
+
+def head(title, desc, path, extra_ld=(), preload=None, robots="index,follow"):
+    url = canon(path)
+    pre = f'<link rel="preload" as="image" href="{preload}" fetchpriority="high">' if preload else ""
+    extra = "".join(ld(x) for x in extra_ld)
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
+<meta name="robots" content="{robots}">
+<link rel="canonical" href="{url}">
+<meta name="theme-color" content="#735ae5">
+<meta name="format-detection" content="telephone=yes">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Macro Headshots">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="{url}">
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
-<meta property="og:image" content="/assets/hero-clients.webp">
-<link rel="icon" href="/assets/logo-dark.png">
+<meta property="og:image" content="{SITE}/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Macro Headshots clients">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{e(title)}">
+<meta name="twitter:description" content="{e(desc)}">
+<meta name="twitter:image" content="{SITE}/assets/og-image.jpg">
+<meta name="geo.region" content="US-NJ">
+<meta name="geo.placename" content="Totowa">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+{pre}
 <link rel="stylesheet" href="/css/styles.css">
-<script type="application/ld+json">{json.dumps({"@context":"https://schema.org","@type":"ProfessionalService","name":"Macro Headshots","telephone":"+1-877-622-4973","address":{"@type":"PostalAddress","streetAddress":"195 US-46, Suite 9","addressLocality":"Totowa","addressRegion":"NJ","postalCode":"07512","addressCountry":"US"},"sameAs":[FB,IG_URL]})}</script>
+{ld(BUSINESS_LD)}{extra}
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 """
+
+def breadcrumb(items):
+    return {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": i + 1, "name": n, "item": canon(pth)} for i, (n, pth) in enumerate(items)]}
+
+def faq_ld():
+    return {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQS]}
 
 def nav(active):
     links = [("/", "Home"), ("/#residency", "Residency"), ("/pricing", "Pricing"), ("/appointments", "Appointments"), ("/#locations", "Locations")]
     items = "".join(f'<a href="{h}"{" class=\"active\"" if h == active else ""}>{t}</a>' for h, t in links)
     return f"""<header class="nav" id="nav">
   <div class="nav-inner">
-    <a class="nav-logo" href="/" aria-label="Macro Headshots home"><img src="/assets/logo-dark.png" alt="Macro Headshots" width="110" height="40"></a>
+    <a class="nav-logo" href="/" aria-label="Macro Headshots home"><img src="/assets/logo-light.png" alt="Macro Headshots" width="104" height="38"></a>
     <nav class="nav-links" aria-label="Main">{items}</nav>
     <div class="nav-cta">
       <a class="btn btn-outline btn-sm" href="{PHONE_TEL}">Call {PHONE}</a>
@@ -132,7 +186,7 @@ def nav(active):
     </div>
   </div>
 </header>
-<main>
+<main id="main">
 """
 
 def footer():
@@ -159,9 +213,13 @@ def footer():
         <ul class="cols2">{towns}</ul>
       </div>
     </div>
-    <div class="footer-bottom"><span>© 2026 Macro Headshots. All rights reserved.</span><span>Professional headshot studio in Totowa, NJ</span></div>
+    <div class="footer-bottom"><span>© 2026 Macro Headshots. All rights reserved.</span><span class="legal"><a href="/privacy-policy">Privacy Policy</a><a href="/cookie-policy">Cookie Policy</a><button type="button" class="linklike" data-cookie-settings>Cookie settings</button></span></div>
   </div>
 </footer>
+<div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
+  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Google reviews and Instagram feed, which may set their own cookies. <a href="/cookie-policy">Learn more</a></p>
+  <div class="cookie-actions"><button type="button" class="btn btn-outline btn-sm" data-consent="necessary">Necessary only</button><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept all</button></div>
+</div>
 <div class="mobile-bar"><a class="btn btn-outline" href="{PHONE_TEL}">Call</a><a class="btn btn-primary" href="/appointments">Book Now</a></div>
 <script src="/js/main.js" defer></script>
 </body>
@@ -171,12 +229,12 @@ def footer():
 BLOBS = '<div class="hero-blobs" aria-hidden="true"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>'
 
 # ---------- sections ----------
-def hero(place, lead):
+def hero(place, lead, town=False):
     return f"""<section class="hero">
   {BLOBS}
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">{icon('pin')} Studio in Totowa, New Jersey</span>
+      <span class="eyebrow">{icon('pin')} {"Serving " + e(place) + ", NJ · Studio in Totowa" if town else "Studio in Totowa, New Jersey"}</span>
       <h1>Best Headshots in <span class="accent">{e(place)}</span></h1>
       <p class="lead">{e(lead)}</p>
       <div class="hero-actions">
@@ -365,8 +423,8 @@ def testimonial(quote):
       <div class="stars">★★★★★</div>
       <h2>“{e(quote)}”</h2>
       <p style="margin-top:14px;color:#e6e1ff">What our clients say about Macro Headshots</p>
-      <div class="reviews"><div class="{ELFSIGHT}" data-elfsight-app-lazy></div></div>
-      <script src="https://static.elfsight.com/platform/platform.js" async></script>
+      <div class="reviews" data-consent-embed="https://static.elfsight.com/platform/platform.js"><div class="{ELFSIGHT}" data-elfsight-app-lazy></div>
+        <div class="consent-placeholder"><p>Our Google reviews are loaded from a third-party service that may set cookies.</p><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept cookies &amp; show reviews</button></div></div>
     </div>
   </div>
 </section>
@@ -376,10 +434,10 @@ def instagram():
     return f"""<section class="section soft">
   <div class="wrap">
     <div class="section-head center"><span class="eyebrow">{IG_SVG.replace('<svg','<svg width="14" height="14"')} @macroheadshots</span><h2>Instagram feed</h2></div>
-    <div class="insta"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/macroheadshots/" data-instgrm-version="13" style="width:100%;max-width:100%"></blockquote></div>
+    <div class="insta" data-consent-embed="https://www.instagram.com/embed.js"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/macroheadshots/" data-instgrm-version="13" style="width:100%;max-width:100%"></blockquote>
+      <div class="consent-placeholder"><p>The Instagram feed is loaded from Instagram, which may set cookies.</p><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept cookies &amp; show feed</button> <a class="btn btn-outline btn-sm" href="{IG_URL}" target="_blank" rel="noopener">Open Instagram</a></div></div>
   </div>
 </section>
-<script async src="https://www.instagram.com/embed.js"></script>
 """
 
 FAQS = None
@@ -414,11 +472,11 @@ def contact():
 </section>
 """
 
-def areas(active=None):
+def areas(active=None, town_name=None):
     chips = "".join(f'<a href="/{s}/"{" class=\"active\"" if s == active else ""}>{n}</a>' for s, n in TOWNS)
     return f"""<section class="section" id="locations">
   <div class="wrap">
-    <div class="section-head"><span class="eyebrow">{icon('pin')} Locations</span><h2>Serving North Jersey and the New York Metro Area</h2><p class="lead">Our Totowa studio is a short drive from these communities.</p></div>
+    <div class="section-head"><span class="eyebrow">{icon('pin')} Locations</span><h2>{"Serving " + e(town_name) + " and all of North Jersey" if town_name else "Serving North Jersey and the New York Metro Area"}</h2><p class="lead">Our Totowa studio is a short drive from these communities.</p></div>
     <div class="areas">{chips}</div>
   </div>
 </section>
@@ -446,7 +504,22 @@ def fix(text):
     return (text.replace("Our studio is located As a professional", "As a professional")
                 .replace("Proffesional", "Professional"))
 
+from PIL import Image as _PIL
+_dims = {}
+def _add_dims(m):
+    tag, src = m.group(0), m.group(1)
+    if " width=" in tag:
+        return tag
+    if src not in _dims:
+        try:
+            _dims[src] = _PIL.open(OUT + src).size
+        except Exception:
+            _dims[src] = None
+    d = _dims[src]
+    return tag if not d else tag[:-1] + f' width="{d[0]}" height="{d[1]}">'
+
 def write(path, body):
+    body = re.sub(r'<img[^>]*?src="(/assets/[^"]+)"[^>]*>', _add_dims, body)
     os.makedirs(os.path.dirname(f"{OUT}/{path}") or OUT, exist_ok=True)
     open(f"{OUT}/{path}", "w").write(body)
 
@@ -455,17 +528,22 @@ FAQS = [(it[1], it[2]) for it in [x for s in c["/"]["sections"] for x in s["item
 def landing(page, place, active_town=None):
     intro = fix(find(page, "paragraph", 0)[1])
     retouch = fix(find(page, "paragraph", 1)[1])
-    lead = "We use state-of-the-art equipment and techniques to capture stunning, unique headshots tailored to you — corporate, acting and more."
+    town = active_town is not None
+    lead = (f"Professional headshots for {place} — corporate, acting, residency and personal branding — at our studio in nearby Totowa, NJ. Retouched and delivered within 24 hours."
+            if town else "We use state-of-the-art equipment and techniques to capture stunning, unique headshots tailored to you — corporate, acting, residency and personal branding.")
     qh = [it[1] for sec in c[page]["sections"] for it in sec["items"] if it[0] == "heading" and it[1].strip().startswith('"')][0]
     quote = re.sub(r"\s+", " ", qh.strip().strip('"“” ')).strip()
     quote = re.sub(r"\bIn\b", "in", quote)
     quote = re.sub(r"\s+Period$", ". Period", quote)
     if not quote.endswith("."):
         quote += "."
-    meta = c[page]
-    return (head(meta["title"], meta["desc"], page) + nav("/" if page == "/" else None) + hero(place, lead) + trust()
+    meta = dict(c[page])
+    if town:
+        meta["title"] = f"Headshots in {place}, NJ | Macro Headshots Studio"
+    crumbs = [breadcrumb([("Home", "/"), (f"Headshots in {place}", page)])] if town else []
+    return (head(meta["title"], meta["desc"], page, [faq_ld()] + crumbs, preload="/assets/hero-clients.webp") + nav("/" if page == "/" else None) + hero(place, lead, town) + trust()
             + services(retouch) + residency() + branding() + gallery() + strengths(intro) + pricing_teaser()
-            + testimonial(quote) + (instagram() if page == "/" else "") + faq() + contact() + areas(active_town) + cta() + footer())
+            + testimonial(quote) + (instagram() if page == "/" else "") + faq() + contact() + areas(active_town, place if town else None) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
 for slug, name in TOWNS:
@@ -476,7 +554,7 @@ perks = [(IMG["perk_retouch"], "Professional Retouching"), (IMG["perk_reviews"],
          (IMG["perk_delivery"], "Same Day Delivery"), (IMG["perk_backdrops"], "More than 50 Backdrops")]
 perk_html = "".join(f'<div class="perk"><img src="{s}" alt="" loading="lazy"><b>{t}</b></div>' for s, t in perks)
 m = c["/pricing"]
-write("pricing.html", head(m["title"], m["desc"], "/pricing") + nav("/pricing") + f"""
+write("pricing.html", head(m["title"], m["desc"], "/pricing", [faq_ld(), breadcrumb([("Home", "/"), ("Pricing", "/pricing")])]) + nav("/pricing") + f"""
 <section class="page-hero">{BLOBS}
   <div class="wrap"><span class="eyebrow">Pricing</span><h1>Headshot packages for <span style="color:var(--brand)">every need</span></h1>
   <p class="lead">Straightforward pricing with professional retouching included in every package.</p>
@@ -492,7 +570,7 @@ write("pricing.html", head(m["title"], m["desc"], "/pricing") + nav("/pricing") 
 m = c["/appointments"]
 mp = f'<img src="{MAP}" alt="Map of the studio" loading="lazy">' if MAP else ""
 pk_rows = "".join(f'<li><span><b>{t}</b><small>{s}</small></span><em>{a}</em></li>' for t, a, s, _ in PRICES)
-write("appointments.html", head(m["title"], m["desc"], "/appointments") + nav("/appointments") + f"""
+write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(), breadcrumb([("Home", "/"), ("Appointments", "/appointments")])], preload="/assets/hero-clients.webp") + nav("/appointments") + f"""
 <section class="hero appt-hero">{BLOBS}
   <div class="wrap hero-grid">
     <div>
@@ -539,7 +617,143 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments") + nav("/
 </section>
 """ + gallery() + strengths(fix(find("/", "paragraph", 0)[1])) + faq() + cta() + footer())
 
+# ---------- legal pages ----------
+UPDATED = "November 9, 2026"
+def legal_page(slug, title, desc, h1, body):
+    write(f"{slug}.html", head(title, desc, f"/{slug}", [breadcrumb([("Home", "/"), (h1, f"/{slug}")])]) + nav(None) + f"""
+<section class="page-hero">{BLOBS}<div class="wrap"><span class="eyebrow">Legal</span><h1>{h1}</h1><p class="lead">Last updated: {UPDATED}</p></div></section>
+<section class="section soft" style="padding-top:56px"><div class="wrap"><article class="prose">{body}</article></div></section>
+""" + footer())
+
+legal_page("privacy-policy", "Privacy Policy | Macro Headshots", "How Macro Headshots collects, uses and protects your personal information when you visit our website or book a headshot session.", "Privacy Policy", f"""
+<p>This Privacy Policy explains how Macro Headshots ("we", "us", "our"), a professional headshot studio at {ADDRESS}, collects, uses and protects personal information when you visit this website, contact us or book a session.</p>
+<h2>Information we collect</h2>
+<ul>
+<li><b>Information you give us.</b> When you fill in our appointment form we collect your first and last name, phone number, email address, preferred session date, the package you are interested in and your message. If you call us, we may note your name and contact details to arrange your session.</li>
+<li><b>Photographs.</b> If you book a session, we take and store the photographs from your session in order to retouch and deliver them to you.</li>
+<li><b>Technical information.</b> Like most websites, our hosting provider automatically receives basic technical data such as your IP address, browser type and the pages you request, which is used to deliver and secure the site.</li>
+<li><b>Cookies.</b> See our <a href="/cookie-policy">Cookie Policy</a> for details of cookies and similar technologies used on this site.</li>
+</ul>
+<h2>How we use your information</h2>
+<ul>
+<li>To respond to your enquiry and schedule, confirm or change your appointment.</li>
+<li>To carry out your session, and to retouch and deliver your photographs.</li>
+<li>To communicate with you about your booking, including reminders and follow-ups.</li>
+<li>To keep our website secure and working properly.</li>
+<li>To meet our legal, tax and accounting obligations.</li>
+</ul>
+<p>We do not sell your personal information.</p>
+<h2>Who we share information with</h2>
+<p>We share information only with service providers that help us run our business, and only as needed for the purposes above:</p>
+<ul>
+<li><b>HighLevel / LeadConnector</b>, which provides our appointment form and customer management system.</li>
+<li><b>Vercel</b>, which hosts this website.</li>
+<li><b>Google Fonts</b>, which serves the fonts used on this site.</li>
+<li><b>Elfsight</b> (Google reviews widget) and <b>Instagram (Meta)</b>, which load only if you accept cookies.</li>
+</ul>
+<p>We may also disclose information if required by law or to protect our rights, property or safety.</p>
+<h2>Photographs and your consent</h2>
+<p>Your photographs belong in your hands. We will not use your photographs in our portfolio, website or social media without your permission. If you have given permission and later change your mind, contact us and we will stop using them in new materials.</p>
+<h2>How long we keep information</h2>
+<p>We keep booking information and session photographs only as long as needed to provide our services and to meet legal and accounting requirements, after which we delete or anonymize it.</p>
+<h2>Security</h2>
+<p>We use reasonable technical and organizational measures to protect your information, including encrypted (HTTPS) connections to this website. No method of transmission or storage is completely secure, but we work to protect your data.</p>
+<h2>Your choices and rights</h2>
+<p>You can ask us to access, correct or delete the personal information we hold about you, or to stop sending you messages. Depending on where you live, you may have additional rights under applicable privacy laws. To make a request, call us at <a href="{PHONE_TEL}">{PHONE}</a> or write to us at the address below. We may need to verify your identity before acting on a request.</p>
+<h2>Children</h2>
+<p>This website is not directed to children under 13, and we do not knowingly collect personal information from them online. Sessions for minors are booked by a parent or guardian.</p>
+<h2>Changes to this policy</h2>
+<p>We may update this policy from time to time. The "Last updated" date at the top shows when it last changed.</p>
+<h2>Contact us</h2>
+<p>Macro Headshots<br>{ADDRESS}<br>Phone: <a href="{PHONE_TEL}">{PHONE}</a></p>
+""")
+
+legal_page("cookie-policy", "Cookie Policy | Macro Headshots", "Which cookies and similar technologies the Macro Headshots website uses, and how to manage your cookie choices.", "Cookie Policy", f"""
+<p>This Cookie Policy explains how the Macro Headshots website uses cookies and similar technologies (such as local storage), and how you can control them. For more about how we handle personal information, see our <a href="/privacy-policy">Privacy Policy</a>.</p>
+<h2>What are cookies?</h2>
+<p>Cookies are small text files that a website stores on your device. Similar technologies, like local storage, work in a comparable way. They can be set by the website you visit (first-party) or by other services that site uses (third-party).</p>
+<h2>Cookies we use</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Category</th><th>Provider</th><th>Purpose</th><th>When it is used</th></tr></thead>
+<tbody>
+<tr><td>Strictly necessary</td><td>Macro Headshots</td><td>Remembers your cookie choice (stored in your browser's local storage as <code>mh-consent</code>).</td><td>Always</td></tr>
+<tr><td>Strictly necessary</td><td>HighLevel / LeadConnector</td><td>Runs the appointment form so you can send a booking request.</td><td>When the booking form loads</td></tr>
+<tr><td>Third-party content</td><td>Elfsight</td><td>Displays our Google reviews.</td><td>Only after you click "Accept all"</td></tr>
+<tr><td>Third-party content</td><td>Instagram (Meta)</td><td>Displays our Instagram feed.</td><td>Only after you click "Accept all"</td></tr>
+</tbody></table></div>
+<p>We do not use advertising cookies, and this site does not run analytics or tracking tools.</p>
+<h2>Managing your choices</h2>
+<p>When you first visit, you can choose <b>Accept all</b> or <b>Necessary only</b>. You can change your choice at any time:</p>
+<p><button type="button" class="btn btn-primary btn-sm" data-cookie-settings>Open cookie settings</button></p>
+<p>You can also block or delete cookies in your browser settings. Blocking strictly necessary cookies may stop parts of the site, such as the booking form, from working.</p>
+<h2>Third-party policies</h2>
+<p>Third-party providers set and control their own cookies. Please see their privacy policies for details: <a href="https://www.gohighlevel.com/privacy-policy" target="_blank" rel="noopener">HighLevel</a>, <a href="https://elfsight.com/privacy-policy/" target="_blank" rel="noopener">Elfsight</a> and <a href="https://privacycenter.instagram.com/policy" target="_blank" rel="noopener">Instagram</a>.</p>
+<h2>Contact us</h2>
+<p>Questions about this policy? Call us at <a href="{PHONE_TEL}">{PHONE}</a>.</p>
+""")
+
+# ---------- 404 ----------
+write("404.html", head("Page not found | Macro Headshots", "The page you are looking for could not be found.", "/404", robots="noindex,follow") + nav(None) + f"""
+<section class="page-hero" style="padding-bottom:120px">{BLOBS}<div class="wrap"><span class="eyebrow">404</span><h1>We could not find that page</h1>
+<p class="lead">The link may be old or mistyped. Here are some good places to start.</p>
+<div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="/">Go to home</a><a class="btn btn-outline" href="/appointments">Book a session</a><a class="btn btn-outline" href="/pricing">See pricing</a></div></div></section>
+""" + footer())
+
+# ---------- icons, manifest, OG image ----------
+ICONS = os.path.join(BRAND, "icons")
+shutil.copy(f"{ICONS}/favicon.ico", f"{OUT}/favicon.ico")
+shutil.copy(f"{ICONS}/apple-touch-icon.png", f"{OUT}/apple-touch-icon.png")
+for n in ("favicon-32.png", "favicon-16.png", "icon-192.png", "icon-512.png"):
+    shutil.copy(f"{ICONS}/{n}", f"{OUT}/assets/{n}")
+json.dump({"name": "Macro Headshots", "short_name": "Macro Headshots", "start_url": "/", "display": "browser",
+           "background_color": "#ffffff", "theme_color": "#735ae5",
+           "icons": [{"src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png"},
+                     {"src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png"}]},
+          open(f"{OUT}/site.webmanifest", "w"), indent=2)
+og = _PIL.new("RGB", (1200, 630), (246, 243, 255))
+col = _PIL.open(f"{BRAND}/hero-clients.webp").convert("RGBA"); col.thumbnail((760, 600))
+og.paste(col, (1200 - col.width - 20, (630 - col.height) // 2), col)
+logo = _PIL.open(f"{BRAND}/logo-dark.png").convert("RGBA"); logo.thumbnail((380, 160))
+og.paste(logo, (60, 235), logo)
+og.save(f"{OUT}/assets/og-image.jpg", quality=86)
+
+# ---------- sitemap & robots ----------
+paths = ["/", "/pricing", "/appointments"] + [f"/{s}/" for s, _ in TOWNS] + ["/privacy-policy", "/cookie-policy"]
+prio = {"/": "1.0", "/appointments": "0.9", "/pricing": "0.9", "/privacy-policy": "0.2", "/cookie-policy": "0.2"}
+urls = "".join(f"<url><loc>{canon(x)}</loc><lastmod>2026-11-09</lastmod><priority>{prio.get(x, '0.7')}</priority></url>" for x in paths)
+open(f"{OUT}/sitemap.xml", "w").write(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>\n')
+open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
+
+# ---------- vercel config with security headers ----------
+CSP = "; ".join([
+    "default-src 'self'",
+    "script-src 'self' https://static.elfsight.com https://*.elfsight.com https://*.elfsightcdn.com https://www.instagram.com https://link.msgsndr.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.elfsight.com https://*.elfsightcdn.com",
+    "font-src 'self' data: https://fonts.gstatic.com https://*.elfsight.com https://*.elfsightcdn.com",
+    "img-src 'self' data: blob: https:",
+    "connect-src 'self' https://*.elfsight.com https://*.elfsightcdn.com https://www.instagram.com",
+    "frame-src https://api.leadconnectorhq.com https://*.leadconnectorhq.com https://link.msgsndr.com https://www.instagram.com https://*.elfsight.com",
+    "media-src 'self' https:",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
+])
+SEC = [
+    {"key": "Content-Security-Policy", "value": CSP},
+    {"key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload"},
+    {"key": "X-Content-Type-Options", "value": "nosniff"},
+    {"key": "X-Frame-Options", "value": "DENY"},
+    {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},
+    {"key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"},
+    {"key": "Cross-Origin-Opener-Policy", "value": "same-origin"},
+    {"key": "X-DNS-Prefetch-Control", "value": "on"},
+]
 json.dump({"cleanUrls": True,
+           "headers": [{"source": "/(.*)", "headers": SEC},
+                       {"source": "/assets/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400"}]},
+                       {"source": "/(css|js)/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=86400, must-revalidate"}]}],
            "redirects": [{"source": "/home", "destination": "/", "permanent": True}],
            "rewrites": [{"source": "/headshots-in-:town/", "destination": "/headshots-in-:town"}]},
           open(f"{OUT}/vercel.json", "w"), indent=2)
