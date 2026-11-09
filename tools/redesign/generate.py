@@ -359,7 +359,7 @@ def services(retouch_text, place=None):
 """
 
 def residency(place=None):
-    specs = [("2.5 × 3.5 in", "Passport-size portrait"), ("375 × 525 px", "At 150 dpi"), ("JPG, ≤ 150 KB", "Upload-ready file"), ("Color, centered", "Head &amp; shoulders")]
+    specs = [("JPG or PNG", "AAMC file type"), ("≤ 150 KB", "AAMC maximum size"), ("Face centered", "AAMC requirement"), ("375 × 525 px", "2.5 × 3.5 in, passport size")]
     spec_html = "".join(f'<div class="spec"><b>{a}</b><small>{b}</small></div>' for a, b in specs)
     return f"""<section class="section" id="residency">
   <div class="wrap">
@@ -367,9 +367,9 @@ def residency(place=None):
       <div class="res-text">
         <span class="eyebrow">{icon('briefcase')} Residency headshots</span>
         <h2>Residency &amp; ERAS headshots for {"medical applicants from " + e(place) if place else "medical applicants"}</h2>
-        <p class="lead">Your photo is one of the first things program directors see on your residency application. We photograph you in a polished, business-professional style on a clean backdrop, then deliver a version sized for the ERAS upload alongside your full-resolution, retouched images.</p>
+        <p class="lead">Your photo is one of the first things program directors see on your residency application. We photograph you in a polished, business-professional style on a clean backdrop, then deliver a file that meets the AAMC ERAS photo rules alongside your full-resolution, retouched images.</p>
         <div class="specs">{spec_html}</div>
-        {bullets(['Quick sessions — the 5-minute package starts at $50', 'Retouched and delivered within 24 hours, in time for application deadlines', 'Plain light backdrop and centered framing that suits ERAS'])}
+        {bullets(['Quick sessions — the 5-minute package starts at $50', 'Retouched and delivered within 24 hours, in time for application deadlines', 'Your face centered, as AAMC requires, on a plain light backdrop'])}
         <div class="hero-actions"><a class="btn btn-primary" href="/appointments">Book a residency headshot</a><a class="btn btn-outline" href="{PHONE_TEL}">Ask a question</a></div>
       </div>
       <div class="res-visual">
@@ -378,7 +378,7 @@ def residency(place=None):
           <div class="eras-photo"><span class="dim dim-w">2.5 in</span><span class="dim dim-h">3.5 in</span><img src="/assets/eras-sample.jpg" alt="Example ERAS residency headshot: head and shoulders on a plain light backdrop, 375 by 525 pixels" loading="lazy"></div>
           <div class="eras-meta"><span>eras-photo.jpg · {ERAS_KB} KB</span><span>375 × 525 px</span></div>
         </div>
-        <div class="float-card rc1"><span class="ic ok">{icon('check')}</span><div><b>Upload-ready</b><small>JPG under 150 KB</small></div></div>
+        <div class="float-card rc1"><span class="ic ok">{icon('check')}</span><div><b>Upload-ready</b><small>Meets AAMC ERAS rules</small></div></div>
         <div class="float-card rc2"><span class="ic">{icon('clock')}</span><div><b>Delivered in 24 hours</b><small>retouched</small></div></div>
       </div>
     </div>
@@ -498,6 +498,26 @@ def how_it_works(soft=False):
       <thead><tr><th>Package</th><th>Session length</th><th>Photos we take</th><th>Final headshots you choose</th></tr></thead>
       <tbody>{rows}</tbody></table></div>
     <div class="digital-note">{icon('image')}<p><b>Digital images only.</b> All headshots are delivered as digital files by email — we do not offer printing.</p></div>
+  </div>
+</section>
+"""
+
+def affordability(soft=False):
+    rows = [("Price", "$250 median per session in New Jersey¹", "$50 for 1 · $100 for 3 · $150 for 5 · $250 for 10"),
+            ("Retouched headshots", "3 or fewer in most packages¹", "1 to 10, you choose the package"),
+            ("What $250 gets you", "About one typical NJ session¹", "10 retouched headshots from a 1-hour session"),
+            ("Retouching & color grading", "Varies by photographer", "Included on every photo you pick"),
+            ("Backgrounds", "Varies by photographer", "Unlimited"),
+            ("Delivery", "Varies by photographer", "Emailed within 24 hours")]
+    tr = "".join(f'<tr><th scope="row">{a}</th><td>{b}</td><td class="us">{c}</td></tr>' for a, b, c in rows)
+    return f"""<section class="section{' soft' if soft else ''}" id="compare">
+  <div class="wrap">
+    <div class="section-head head-split"><div><span class="eyebrow">{icon('check')} Affordability</span><h2>How our prices compare</h2></div>
+    <p class="lead">A typical New Jersey headshot session costs about $250 and usually includes three or fewer images. At Macro Headshots, $250 gets you ten retouched headshots.</p></div>
+    <div class="cmp-table"><table>
+      <thead><tr><th></th><th>Typical headshot photographer</th><th class="us">Macro Headshots</th></tr></thead>
+      <tbody>{tr}</tbody></table></div>
+    <p class="cmp-note">¹ <a href="https://www.headshotpro.com/blog/how-much-does-a-headshot-cost" target="_blank" rel="noopener">HeadshotPro survey of 751 photographer websites</a> (data updated January 2025): New Jersey median session price $250; 66% of packages include 3 or fewer headshots. Nationally, Thumbtack estimates an average of about $304 per headshot session (<a href="https://magichour.ai/blog/how-much-does-a-headshot-cost" target="_blank" rel="noopener">as reported by Magic Hour</a>). Prices vary by photographer.</p>
   </div>
 </section>
 """
@@ -705,7 +725,7 @@ def landing(page, place, active_town=None):
     return (head(home_title, home_desc, "/", [faq_ld()], preload="/assets/hero-clients.webp") + nav("/")
             + hero(place, home_lead, False, 'Professional Headshots in <span class="accent">Totowa, NJ</span>', home=True)
             + trust() + gallery() + testimonial(quote) + services(retouch, None) + residency(None) + branding(None)
-            + strengths(intro) + pricing_teaser() + how_it_works(True) + faq() + contact() + instagram() + areas(None, None) + cta() + footer())
+            + strengths(intro) + pricing_teaser() + affordability(True) + how_it_works() + faq() + contact() + instagram() + areas(None, None) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
 for slug, name in TOWNS:
@@ -718,7 +738,7 @@ perk_html = "".join(f'<div class="perk"><span class="perk-ic">{icon(i)}</span><b
 m = c["/pricing"]
 write("pricing.html", head(m["title"], m["desc"], "/pricing", [faq_ld(), breadcrumb([("Home", "/"), ("Pricing", "/pricing")])]) + nav("/pricing") + f"""
 <section class="page-hero">{BLOBS}
-  <div class="wrap"><span class="eyebrow">Pricing</span><h1>Headshot packages for <span style="color:var(--brand)">every need</span></h1>
+  <div class="wrap">{crumbs([("Home", "/"), ("Pricing", "/pricing")])}<span class="eyebrow">Pricing</span><h1>Headshot packages for <span style="color:var(--brand)">every need</span></h1>
   <p class="lead">Straightforward pricing with professional retouching included in every package.</p>
   <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="/appointments">Book Your Session</a><a class="btn btn-outline" href="{PHONE_TEL}">Call {PHONE}</a></div></div>
 </section>
@@ -726,7 +746,7 @@ write("pricing.html", head(m["title"], m["desc"], "/pricing", [faq_ld(), breadcr
   <div class="perks">{perk_html}</div>
   {price_cards()}
 </div></section>
-""" + how_it_works() + faq() + contact() + cta() + footer())
+""" + affordability() + how_it_works(True) + faq() + contact() + cta() + footer())
 
 # appointments
 m = c["/appointments"]
@@ -736,6 +756,7 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(
 <section class="hero appt-hero">{BLOBS}
   <div class="wrap hero-grid">
     <div>
+      {crumbs([("Home", "/"), ("Appointments", "/appointments")])}
       <span class="eyebrow">{icon('calendar')} Book online</span>
       <h1>Make an <span class="accent">appointment</span></h1>
       <p class="lead">Choose a date and the headshot package you are interested in, and our team will get back to you. Prefer to talk? Call us at <a href="{PHONE_TEL}" style="color:var(--brand);font-weight:600">{PHONE}</a>.</p>
@@ -787,7 +808,7 @@ exec(open(f"{HERE}/ext_pages.py").read())
 UPDATED = "November 9, 2026"
 def legal_page(slug, title, desc, h1, body):
     write(f"{slug}.html", head(title, desc, f"/{slug}", [breadcrumb([("Home", "/"), (h1, f"/{slug}")])]) + nav(None) + f"""
-<section class="page-hero">{BLOBS}<div class="wrap"><span class="eyebrow">Legal</span><h1>{h1}</h1><p class="lead">Last updated: {UPDATED}</p></div></section>
+<section class="page-hero">{BLOBS}<div class="wrap">{crumbs([("Home", "/"), (h1, f"/{slug}")])}<span class="eyebrow">Legal</span><h1>{h1}</h1><p class="lead">Last updated: {UPDATED}</p></div></section>
 <section class="section soft" style="padding-top:56px"><div class="wrap"><article class="prose">{body}</article></div></section>
 """ + footer())
 

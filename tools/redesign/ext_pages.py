@@ -49,14 +49,14 @@ SERVICE_INFO = {
           ("Will my headshots be heavily retouched?", "No. Acting headshots get light retouching so you look exactly like you do in person.")]),
  "residency-headshots": dict(
     kw="Medical residency headshots NJ", title="Residency Headshots NJ | ERAS Photos in 24 Hours",
-    desc="Medical residency (ERAS) headshots in NJ: business-professional portraits plus an ERAS-ready file (375 x 525 px JPG), retouched within 24 hours.",
+    desc="Medical residency (ERAS) headshots in NJ: business-professional portraits plus an ERAS-ready file (JPG under 150 KB, face centered), retouched in 24 hours.",
     h1="Medical residency headshots (ERAS) in New Jersey", stype="Medical residency application photography",
     lead="Business-professional portraits for your residency application, with an ERAS-ready version and your full-resolution files emailed within 24 hours.",
     photos=["headshot-22b", "headshot-22a", "headshot-25a", "headshot-22c", "headshot-25b", "headshot-31a"],
     who=["Medical students applying through ERAS", "International medical graduates", "Fellowship applicants", "Residents updating hospital directory photos"],
-    inc=["Head-and-shoulders framing on a plain background", "An ERAS-sized file: 2.5 x 3.5 in at 150 dpi (375 x 525 px), JPG under 150 KB", "Full-resolution retouched images for other uses", "Delivery within 24 hours for tight deadlines"],
+    inc=["Head-and-shoulders framing on a plain background", "An ERAS file that meets AAMC rules: JPG, 150 KB max, face centered (sized 375 x 525 px)", "Full-resolution retouched images for other uses", "Delivery within 24 hours for tight deadlines"],
     guides=["medical-residency-headshots", "what-to-wear-corporate-headshot", "retouched-headshots-24-hours"],
-    faqs=[("What size is the ERAS photo?", "2.5 x 3.5 inches at 150 dpi, which is 375 x 525 pixels, saved as a JPG of 150 KB or less."),
+    faqs=[("What are the ERAS photo requirements?", "AAMC requires a JPG/JPEG or PNG file of 150 KB or less with your face centered. We deliver it at 375 x 525 pixels (2.5 x 3.5 inches at 150 dpi), the passport-size portrait applicants commonly use."),
           ("Can I also get a white-coat photo?", "Yes. Bring your white coat for a second look; follow your program's guidance on which photo to submit.")]),
  "professional-headshots": dict(
     kw="Professional headshots NJ", title="Professional Headshots NJ | From $50, Totowa Studio",

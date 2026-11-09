@@ -43,7 +43,7 @@ TOWN_INFO = {
         highlights=["Paterson Great Falls National Historical Park", "St. Joseph's University Medical Center", "Passaic County Community College", "Passaic County seat"],
         neighbors=["totowa", "woodland-park", "haledon", "prospect-park", "clifton"],
         faqs=[
-            ("Do you offer ERAS headshots for residency applicants in Paterson?", "Yes. We deliver a version sized for the ERAS upload (2.5 × 3.5 in, 375 × 525 px, JPG under 150 KB) along with your full-resolution, retouched photos."),
+            ("Do you offer ERAS headshots for residency applicants in Paterson?", "Yes. We deliver an ERAS file that meets AAMC rules (JPG, 150 KB max, face centered) along with your full-resolution, retouched photos."),
             ("Can you photograph a team from a Paterson office or hospital department?", "Yes. Call us at 877-622-4973 to plan a group of sessions so your whole team has consistent headshots."),
         ]),
     "clifton": dict(

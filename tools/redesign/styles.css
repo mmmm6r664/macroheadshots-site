@@ -576,3 +576,14 @@ li>svg{width:20px;height:20px;flex:none;color:var(--brand);margin-top:2px}
 .price-card.has-badge{padding-top:52px}
 .pc-badge{position:absolute;top:18px;left:24px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:var(--brand-soft);color:var(--brand-dark)}
 .price-card.feature .pc-badge{background:var(--lime);color:#1d1650}
+.cmp-table{background:#fff;border-radius:var(--radius);overflow-x:auto}
+.cmp-table table{width:100%;border-collapse:collapse;min-width:560px;font-size:15px}
+.cmp-table th,.cmp-table td{padding:16px 20px;text-align:left;border-bottom:1px solid #eeeaf9;vertical-align:top}
+.cmp-table thead th{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.cmp-table tbody th{font-weight:600;color:var(--ink);width:24%}
+.cmp-table td{color:var(--body)}
+.cmp-table .us{background:#f6f3ff;color:var(--ink);font-weight:600}
+.cmp-table thead .us{color:var(--brand-dark)}
+.cmp-table tr:last-child th,.cmp-table tr:last-child td{border-bottom:0}
+.cmp-note{margin-top:14px;font-size:13px;color:var(--muted);line-height:1.6}
+.cmp-note a{color:var(--brand-dark);text-decoration:underline}

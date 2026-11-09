@@ -19,6 +19,8 @@ GUIDES = [
 <li><b>Turnaround.</b> Some photographers deliver in a week or more; faster delivery can cost extra.</li>
 <li><b>Extras.</b> Hair and makeup, printed copies or usage licensing can add to the total.</li>
 </ul>
+<h2>What a typical New Jersey session costs</h2>
+<p>A <a href="https://www.headshotpro.com/blog/how-much-does-a-headshot-cost" target="_blank" rel="noopener">HeadshotPro survey of 751 photographer websites</a> (data updated January 2025) put the median New Jersey headshot session at $250, and found that 66% of packages include three or fewer headshots. Nationally, Thumbtack estimates about $304 per session. At our studio, $250 buys ten retouched headshots from a 1-hour session.</p>
 <h2>Macro Headshots pricing (Totowa, NJ)</h2>
 <div class="table-wrap"><table>
 <thead><tr><th>Package</th><th>Price</th><th>Session</th><th>Photos taken</th><th>You choose</th></tr></thead>
@@ -177,16 +179,16 @@ GUIDES = [
         title="How to Prepare for ERAS Residency Headshots | Macro",
         desc="How to prepare for your residency application photo: ERAS photo requirements, what to wear, and how to get an upload-ready file in 24 hours.",
         img="headshot-22b",
-        short="Wear business-professional attire, book well before your application deadline, and make sure you receive a file that meets the ERAS specifications: 2.5 × 3.5 inches at 150 dpi (375 × 525 pixels), a JPG of 150 KB or less.",
+        short="Wear business-professional attire, book well before your application deadline, and make sure you receive a file that meets the AAMC ERAS rules: a JPG/JPEG or PNG of 150 KB or less, with your face centered.",
         body="""
 <p>Your photo appears on your residency application and is one of the first things program directors see. It should look professional, current and like you on interview day.</p>
 <h2>ERAS photo requirements</h2>
 <ul>
-<li>Size: 2.5 × 3.5 inches, which is 375 × 525 pixels at 150 dpi.</li>
-<li>Format: JPG, 150 KB or less.</li>
-<li>Head and shoulders, centered, on a plain background.</li>
+<li>File type: JPG/JPEG or PNG.</li>
+<li>Maximum file size: 150 KB.</li>
+<li>Your face is centered in the photo.</li>
 </ul>
-<p>Requirements come from ECFMG's upload instructions; always confirm the current rules for your application cycle.</p>
+<p>These are the rules in the <a href="https://students-residents.aamc.org/applying-residencies-eras/publication-chapters/photo" target="_blank" rel="noopener">AAMC ERAS photo guidance</a>; confirm them for your application cycle. AAMC does not set a background or attire rule. We deliver your ERAS file at 375 × 525 pixels (2.5 × 3.5 inches at 150 dpi), the passport-size portrait applicants commonly use, on a plain background.</p>
 <h2>What to wear</h2>
 <ul>
 <li>A dark suit or blazer with a light shirt or blouse is the safest choice.</li>
@@ -200,9 +202,9 @@ GUIDES = [
 <li>Your retouched photos are emailed within 24 hours, so even a close deadline is manageable.</li>
 </ul>
 <h2>At Macro Headshots</h2>
-<p>We photograph you in a business-professional style on a clean backdrop and deliver your retouched images by email within 24 hours. Ask for a version sized for ERAS when you book.</p>
+<p>We photograph you in a business-professional style on a clean backdrop and deliver your retouched images by email within 24 hours. Ask for your ERAS file when you book.</p>
 """,
-        faqs=[("What size is an ERAS photo?", "2.5 × 3.5 inches at 150 dpi (375 × 525 pixels), saved as a JPG of 150 KB or less."),
+        faqs=[("What are the ERAS photo requirements?", "AAMC requires a JPG/JPEG or PNG file of 150 KB or less with your face centered. We deliver it at 375 × 525 pixels (2.5 × 3.5 inches at 150 dpi)."),
               ("Should I wear a white coat in my residency photo?", "Business-professional attire is the safest choice. Follow your school's or program's guidance on white coats for the application photo.")],
     ),
     dict(
