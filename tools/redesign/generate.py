@@ -107,7 +107,7 @@ def head(title, desc, path):
 <meta name="description" content="{e(desc)}">
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
-<meta property="og:image" content="{IMG['hero']}">
+<meta property="og:image" content="{IG[4]}">
 <link rel="icon" href="/assets/logo-dark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -189,10 +189,13 @@ def hero(place, lead):
       </div>
     </div>
     <div class="hero-visual">
-      <img class="main" src="{IMG['hero']}" alt="Macro Headshots clients: corporate and acting headshots" width="1200" height="940" fetchpriority="high">
+      <div class="hero-photos">
+        <img class="tall" src="{IG[4]}" alt="Corporate headshot by Macro Headshots" width="523" height="640" fetchpriority="high">
+        <img src="{IG[3]}" alt="Professional headshot by Macro Headshots" width="480" height="640">
+        <img src="{IG[8]}" alt="Headshot by Macro Headshots" width="480" height="640">
+      </div>
       <div class="float-card fc1"><span class="ic ok">{icon('check')}</span><div><b>Retouched &amp; delivered</b><small>within 24 hours</small></div></div>
-      <div class="float-card fc2"><span class="ic">{icon('calendar')}</span><div><b>Sessions from 5 minutes</b><small>packages from $50</small></div></div>
-      <div class="float-card fc3"><span class="ic">{icon('image')}</span><div><b>6 backdrops</b><small>+ digital background changes</small></div></div>
+      <div class="float-card fc2"><span class="ic">{icon('calendar')}</span><div><b>Sessions from $50</b><small>5 minutes to 1 hour</small></div></div>
     </div>
   </div>
 </section>
