@@ -144,6 +144,19 @@ p{margin:0}
 .float-card.rc1{top:22%;right:-48px}
 .float-card.rc2{bottom:14%;left:-56px;animation-delay:-3s}
 
+/* personal branding */
+.brand-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.brand-tile{background:#fff;border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+.brand-tile:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.brand-tile img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center 20%}
+.bt-body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px}
+.bt-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.bt-head h3{font-size:18px}
+.bt-head .arrow-btn{width:30px;height:30px}
+.bt-head .arrow-btn svg{width:14px;height:14px}
+.bt-body p{font-size:14px;line-height:1.5}
+.brand-foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-top:28px}
+
 /* strengths */
 .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .stat-card{background:#fff;border-radius:var(--radius);padding:28px 24px;display:flex;flex-direction:column;gap:14px;min-height:240px}
@@ -289,6 +302,7 @@ p{margin:0}
 /* responsive */
 @media (max-width:1024px){
   .cards4,.price-grid,.perks{grid-template-columns:repeat(2,1fr)}
+  .brand-grid{grid-template-columns:repeat(3,1fr)}
   .stack-body{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr 1fr}
   .footer-grid>div:last-child{grid-column:1/-1}
@@ -328,6 +342,10 @@ p{margin:0}
 }
 @media (max-width:560px){
   .cards4,.price-grid,.perks,.footer-grid{grid-template-columns:1fr}
+  .brand-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .bt-body{padding:12px}
+  .bt-head h3{font-size:16px}
+  .bt-head .arrow-btn{display:none}
   .stack-media{grid-template-columns:1fr 1fr}
   .stack-media .ph:nth-child(3){display:none}
   .gallery{grid-template-columns:1fr 1fr}

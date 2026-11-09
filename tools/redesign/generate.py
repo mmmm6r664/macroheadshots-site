@@ -152,7 +152,7 @@ def footer():
       </div>
       <div>
         <h4>Studio</h4>
-        <ul><li><a href="/">Home</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
+        <ul><li><a href="/">Home</a></li><li><a href="/pricing">Pricing</a></li><li><a href="/appointments">Book an Appointment</a></li><li><a href="/#residency">Residency Headshots</a></li><li><a href="/#personal-branding">Personal Branding Headshots</a></li><li><a href="/#faq">FAQs</a></li><li><a href="/#contact">Contact</a></li></ul>
       </div>
       <div>
         <h4>Locations We Serve</h4>
@@ -268,6 +268,32 @@ def residency():
         <div class="float-card rc1"><span class="ic ok">{icon('check')}</span><div><b>Upload-ready</b><small>JPG under 150 KB</small></div></div>
         <div class="float-card rc2"><span class="ic">{icon('clock')}</span><div><b>Delivered in 24 hours</b><small>retouched</small></div></div>
       </div>
+    </div>
+  </div>
+</section>
+"""
+
+def branding():
+    tiles = [
+        (7, "Realtors", "Listings, yard signs and your brokerage or Zillow profile."),
+        (2, "Influencers", "A consistent, recognizable look across Instagram, TikTok and YouTube."),
+        (10, "Consultants", "LinkedIn, proposals and the About page of your website."),
+        (6, "Speakers", "Event programs, speaker one-sheets and press kits."),
+        (1, "Content creators", "Thumbnails, channel art and brand media kits."),
+    ]
+    html_t = "".join(f'<a class="brand-tile" href="/appointments"><img src="{IG[i]}" alt="Personal branding headshot for {t.lower()}" loading="lazy"><div class="bt-body"><div class="bt-head"><h3>{t}</h3><span class="arrow-btn">{icon("arrow")}</span></div><p>{d}</p></div></a>' for i, t, d in tiles)
+    return f"""<section class="section soft" id="personal-branding">
+  <div class="wrap">
+    <div class="section-head head-split"><div><span class="eyebrow">{icon('sparkle')} Personal branding</span><h2>Personal branding headshots</h2></div>
+    <p class="lead">When you are the brand, your photo does the introducing. We create headshots with personality for realtors, influencers, consultants, speakers and content creators — images that feel like you and look great everywhere you show up.</p></div>
+    <div class="brand-grid">{html_t}</div>
+    <div class="brand-foot">
+      <div class="chips" style="margin-top:0">
+        <span class="chip">{icon('layers')} 6 backdrops + digital background changes</span>
+        <span class="chip">{icon('timer')} Longer sessions for more looks</span>
+        <span class="chip">{icon('sparkle')} Every photo retouched</span>
+      </div>
+      <a class="btn btn-primary" href="/appointments">Book a branding session</a>
     </div>
   </div>
 </section>
@@ -438,7 +464,7 @@ def landing(page, place, active_town=None):
         quote += "."
     meta = c[page]
     return (head(meta["title"], meta["desc"], page) + nav("/" if page == "/" else None) + hero(place, lead) + trust()
-            + services(retouch) + residency() + gallery() + strengths(intro) + pricing_teaser()
+            + services(retouch) + residency() + branding() + gallery() + strengths(intro) + pricing_teaser()
             + testimonial(quote) + (instagram() if page == "/" else "") + faq() + contact() + areas(active_town) + cta() + footer())
 
 write("index.html", landing("/", "New York Metro Area"))
