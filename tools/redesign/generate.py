@@ -14,6 +14,8 @@ shutil.copy(f"{HERE}/main.js", f"{OUT}/js/main.js")
 shutil.copy(f"{BRAND}/logo-dark.png", f"{OUT}/assets/logo-dark.png")
 shutil.copy(f"{BRAND}/logo-light.png", f"{OUT}/assets/logo-light.png")
 shutil.copy(f"{BRAND}/hero-clients.webp", f"{OUT}/assets/hero-clients.webp")
+shutil.copy(f"{BRAND}/eras-sample.jpg", f"{OUT}/assets/eras-sample.jpg")
+ERAS_KB = round(os.path.getsize(f"{BRAND}/eras-sample.jpg") / 1024)
 
 _files = os.listdir(ASSETS_SRC)
 def asset(media_id, name):
@@ -323,8 +325,8 @@ def residency(place=None):
       <div class="res-visual">
         <div class="eras-card">
           <div class="eras-top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="eras-title">Application photo</span></div>
-          <div class="eras-photo"><span class="dim dim-w">2.5 in</span><span class="dim dim-h">3.5 in</span><img src="{IG[5]}" alt="Example residency headshot on a plain backdrop" loading="lazy"></div>
-          <div class="eras-meta"><span>photo.jpg</span><span>375 × 525 px</span></div>
+          <div class="eras-photo"><span class="dim dim-w">2.5 in</span><span class="dim dim-h">3.5 in</span><img src="/assets/eras-sample.jpg" alt="Example ERAS residency headshot: head and shoulders on a plain light backdrop, 375 by 525 pixels" loading="lazy"></div>
+          <div class="eras-meta"><span>eras-photo.jpg · {ERAS_KB} KB</span><span>375 × 525 px</span></div>
         </div>
         <div class="float-card rc1"><span class="ic ok">{icon('check')}</span><div><b>Upload-ready</b><small>JPG under 150 KB</small></div></div>
         <div class="float-card rc2"><span class="ic">{icon('clock')}</span><div><b>Delivered in 24 hours</b><small>retouched</small></div></div>

@@ -131,18 +131,18 @@ p{margin:0}
 .spec{background:#fff;border-radius:14px;padding:12px 14px;box-shadow:var(--shadow-sm)}
 .spec b{display:block;font-family:var(--head);font-weight:600;color:var(--ink);font-size:15px;line-height:1.3}
 .spec small{color:var(--muted);font-size:12px}
-.res-visual{position:relative;max-width:360px;margin:0 auto;width:100%}
+.res-visual{position:relative;max-width:330px;margin:0 auto;width:100%}
 .eras-card{background:#fff;border-radius:22px;box-shadow:var(--shadow);padding:14px 14px 16px}
 .eras-top{display:flex;align-items:center;gap:6px;margin-bottom:14px}
 .eras-top .dot{width:9px;height:9px;border-radius:50%;background:#e4e4ea}
 .eras-title{margin-left:8px;font-size:13px;font-weight:600;color:var(--ink)}
 .eras-photo{position:relative;margin:0 22px 0 26px}
-.eras-photo img{width:100%;aspect-ratio:2.5/3.5;object-fit:cover;object-position:center 15%;border-radius:10px;border:2px dashed rgba(115,90,229,.55)}
+.eras-photo img{display:block;width:100%;height:auto;aspect-ratio:375/525;object-fit:cover;border-radius:6px;outline:2px dashed rgba(115,90,229,.55);outline-offset:4px}
 .dim{position:absolute;font-size:11px;font-weight:700;color:var(--brand);background:var(--brand-soft);border-radius:999px;padding:2px 8px}
-.dim-w{top:-11px;left:50%;transform:translateX(-50%)}
-.dim-h{left:-30px;top:50%;transform:translateY(-50%) rotate(-90deg)}
+.dim-w{top:-16px;left:50%;transform:translateX(-50%);z-index:1}
+.dim-h{left:-34px;top:50%;transform:translateY(-50%) rotate(-90deg);z-index:1}
 .eras-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:14px;padding:0 6px}
-.float-card.rc1{top:22%;right:-48px}
+.float-card.rc1{top:-18px;right:-56px}
 .float-card.rc2{bottom:14%;left:-56px;animation-delay:-3s}
 
 /* personal branding */
