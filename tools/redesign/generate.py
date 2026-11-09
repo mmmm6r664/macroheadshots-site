@@ -11,6 +11,7 @@ shutil.copy(f"{HERE}/styles.css", f"{OUT}/css/styles.css")
 shutil.copy(f"{HERE}/main.js", f"{OUT}/js/main.js")
 shutil.copy(f"{BRAND}/logo-dark.png", f"{OUT}/assets/logo-dark.png")
 shutil.copy(f"{BRAND}/logo-light.png", f"{OUT}/assets/logo-light.png")
+shutil.copy(f"{BRAND}/hero-clients.webp", f"{OUT}/assets/hero-clients.webp")
 
 _files = os.listdir(ASSETS_SRC)
 def asset(media_id, name):
@@ -107,7 +108,7 @@ def head(title, desc, path):
 <meta name="description" content="{e(desc)}">
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
-<meta property="og:image" content="{IG[4]}">
+<meta property="og:image" content="/assets/hero-clients.webp">
 <link rel="icon" href="/assets/logo-dark.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -189,11 +190,7 @@ def hero(place, lead):
       </div>
     </div>
     <div class="hero-visual">
-      <div class="hero-photos">
-        <img class="tall" src="{IG[4]}" alt="Corporate headshot by Macro Headshots" width="523" height="640" fetchpriority="high">
-        <img src="{IG[3]}" alt="Professional headshot by Macro Headshots" width="480" height="640">
-        <img src="{IG[8]}" alt="Headshot by Macro Headshots" width="480" height="640">
-      </div>
+      <img class="collage" src="/assets/hero-clients.webp" alt="Recent Macro Headshots clients: corporate and professional headshots" width="1200" height="940" fetchpriority="high">
       <div class="float-card fc1"><span class="ic ok">{icon('check')}</span><div><b>Retouched &amp; delivered</b><small>within 24 hours</small></div></div>
       <div class="float-card fc2"><span class="ic">{icon('calendar')}</span><div><b>Sessions from $50</b><small>5 minutes to 1 hour</small></div></div>
     </div>
@@ -440,31 +437,53 @@ write("pricing.html", head(m["title"], m["desc"], "/pricing") + nav("/pricing") 
 # appointments
 m = c["/appointments"]
 mp = f'<img src="{MAP}" alt="Map of the studio" loading="lazy">' if MAP else ""
+pk_rows = "".join(f'<li><span><b>{t}</b><small>{s}</small></span><em>{a}</em></li>' for t, a, s, _ in PRICES)
 write("appointments.html", head(m["title"], m["desc"], "/appointments") + nav("/appointments") + f"""
-<section class="page-hero">{BLOBS}
-  <div class="wrap"><span class="eyebrow">{icon('calendar')} Book online</span><h1>Make an appointment</h1>
-  <p class="lead">Tell us when you would like to come in and which package you are interested in. We will confirm your session.</p></div>
-</section>
-<section class="section soft" style="padding-top:56px"><div class="wrap book-grid">
-  <div class="form-card">
-    <iframe src="https://api.leadconnectorhq.com/widget/form/{FORM_ID}" id="inline-{FORM_ID}" data-layout="{{'id':'INLINE'}}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="Appointments" data-height="1150" data-layout-iframe-id="inline-{FORM_ID}" data-form-id="{FORM_ID}" title="Appointment request form"></iframe>
-    <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+<section class="hero appt-hero">{BLOBS}
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">{icon('calendar')} Book online</span>
+      <h1>Make an <span class="accent">appointment</span></h1>
+      <p class="lead">Choose a date and the headshot package you are interested in, and our team will get back to you. Prefer to talk? Call us at <a href="{PHONE_TEL}" style="color:var(--brand);font-weight:600">{PHONE}</a>.</p>
+      <div class="hero-actions"><a class="btn btn-primary" href="#book">Fill in the form</a><a class="btn btn-outline" href="{PHONE_TEL}">Call {PHONE}</a></div>
+      <div class="chips">
+        <span class="chip">{icon('clock')} Retouched in 24 hours</span>
+        <span class="chip">{icon('timer')} Sessions from 5 minutes</span>
+        <span class="chip">{icon('pin')} Totowa, NJ studio</span>
+      </div>
+    </div>
+    <div class="hero-visual"><img class="collage" src="/assets/hero-clients.webp" alt="Recent Macro Headshots clients" width="1200" height="940"></div>
   </div>
-  <aside class="side">
-    <div class="contact-card">
-      <h3>How it works</h3>
-      <ol class="steps"><li>Send the form with your preferred date and package.</li><li>We confirm your appointment.</li><li>Come to the studio for your session.</li><li>Get your retouched photos within 24 hours.</li></ol>
+</section>
+<section class="section soft" id="book">
+  <div class="wrap">
+    <div class="section-head head-split"><div><span class="eyebrow">Request a session</span><h2>Book your headshot session</h2></div><p class="lead">All fields are required. Pick the package you are interested in — you can always change it at the studio.</p></div>
+    <div class="book-grid">
+      <div class="form-card">
+        <iframe src="https://api.leadconnectorhq.com/widget/form/{FORM_ID}" id="inline-{FORM_ID}" data-layout="{{'id':'INLINE'}}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="Appointments" data-height="1150" data-layout-iframe-id="inline-{FORM_ID}" data-form-id="{FORM_ID}" title="Appointment request form"></iframe>
+        <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+      </div>
+      <aside class="side">
+        <div class="contact-card">
+          <h3>How it works</h3>
+          <ol class="steps"><li>Send the form with your preferred date and package.</li><li>Our team gets back to you to set the time.</li><li>Come to the studio for your session.</li><li>Get your retouched photos within 24 hours.</li></ol>
+        </div>
+        <div class="contact-card">
+          <h3>Packages</h3>
+          <ul class="pk">{pk_rows}</ul>
+          <a class="btn btn-outline btn-sm" href="/pricing">Compare packages</a>
+        </div>
+        <div class="contact-card">
+          <h3>Prefer to talk to us?</h3>
+          <div class="contact-row"><span class="ic">{icon('phone')}</span><div><small>Call us</small><b><a href="{PHONE_TEL}">{PHONE}</a></b></div></div>
+          <div class="contact-row"><span class="ic">{icon('pin')}</span><div><small>Studio location</small><b>195 US-46, Suite 9, Totowa NJ</b></div></div>
+          <a class="map-card" style="min-height:200px" href="{MAPS_URL}" target="_blank" rel="noopener" aria-label="Open the studio in Google Maps">{mp}<span class="pin"><b>Get directions</b></span></a>
+        </div>
+      </aside>
     </div>
-    <div class="contact-card">
-      <h3>Prefer to talk to us?</h3>
-      <p>Call the studio or stop by during business hours.</p>
-      <div class="contact-row"><span class="ic">{icon('phone')}</span><div><small>Call us</small><b><a href="{PHONE_TEL}">{PHONE}</a></b></div></div>
-      <div class="contact-row"><span class="ic">{icon('pin')}</span><div><small>Studio location</small><b>195 US-46, Suite 9, Totowa NJ</b></div></div>
-    </div>
-    <a class="map-card" style="min-height:240px" href="{MAPS_URL}" target="_blank" rel="noopener" aria-label="Open the studio in Google Maps">{mp}<span class="pin"><b>Get directions</b></span></a>
-  </aside>
-</div></section>
-""" + footer())
+  </div>
+</section>
+""" + gallery() + strengths(fix(find("/", "paragraph", 0)[1])) + faq() + cta() + footer())
 
 json.dump({"cleanUrls": True,
            "redirects": [{"source": "/home", "destination": "/", "permanent": True}],
