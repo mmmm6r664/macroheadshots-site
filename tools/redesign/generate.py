@@ -43,7 +43,7 @@ IMG = {
     "perk_backdrops": asset("66febe60b27ab0e9b1cb2ea4", "icon-backdrops"),
 }
 GAL_DIR = os.path.join(HERE, "..", "gallery")
-GALLERY = json.load(open(os.path.join(GAL_DIR, "manifest.json")))
+GALLERY = [g for g in json.load(open(os.path.join(GAL_DIR, "manifest.json"))) if g[0] not in ("headshot-34b.webp", "headshot-34c.webp")]  # removed at owner request
 os.makedirs(f"{OUT}/assets/gallery", exist_ok=True)
 for _n, *_ in GALLERY:
     shutil.copy(os.path.join(GAL_DIR, _n), f"{OUT}/assets/gallery/{_n}")
@@ -265,7 +265,7 @@ def footer():
   </div>
 </footer>
 <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
-  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Instagram feed, which may set their own cookies. <a href="/cookie-policy">Read our cookie policy</a></p>
+  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Instagram feed and Statcounter visitor statistics, which may set their own cookies. <a href="/cookie-policy">Read our cookie policy</a></p>
   <div class="cookie-actions"><button type="button" class="btn btn-outline btn-sm" data-consent="necessary">Necessary only</button><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept all</button></div>
 </div>
 <div class="mobile-bar"><a class="btn btn-outline" href="{PHONE_TEL}">Call</a><a class="btn btn-primary" href="/appointments">Book Now</a></div>
@@ -840,7 +840,7 @@ legal_page("privacy-policy", "Privacy Policy | Macro Headshots", "How Macro Head
 <li><b>HighLevel / LeadConnector</b>, which provides our appointment form and customer management system.</li>
 <li><b>Vercel</b>, which hosts this website.</li>
 <li><b>Google Fonts</b>, which serves the fonts used on this site.</li>
-<li><b>Instagram (Meta)</b>, which loads only if you accept cookies.</li>
+<li><b>Instagram (Meta)</b> and <b>Statcounter</b> (visitor statistics), which load only if you accept cookies.</li>
 </ul>
 <p>We may also disclose information if required by law or to protect our rights, property or safety.</p>
 <h2>Photographs and your consent</h2>
@@ -870,6 +870,7 @@ legal_page("cookie-policy", "Cookie Policy | Macro Headshots", "Which cookies an
 <tr><td>Strictly necessary</td><td>Macro Headshots</td><td>Remembers your cookie choice (stored in your browser's local storage as <code>mh-consent</code>).</td><td>Always</td></tr>
 <tr><td>Strictly necessary</td><td>HighLevel / LeadConnector</td><td>Runs the appointment form so you can send a booking request.</td><td>When the booking form loads</td></tr>
 <tr><td>Third-party content</td><td>Instagram (Meta)</td><td>Displays our Instagram feed.</td><td>Only after you click "Accept all"</td></tr>
+<tr><td>Analytics</td><td><a href="https://statcounter.com/about/legal/#privacy" target="_blank" rel="noopener">Statcounter</a></td><td>Counts visits and shows which pages are popular, so we can improve the site.</td><td>Only after you click "Accept all"</td></tr>
 </tbody></table></div>
 <p>We do not use advertising cookies, and this site does not run analytics or tracking tools.</p>
 <h2>Managing your choices</h2>
@@ -917,11 +918,11 @@ open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE
 # ---------- vercel config with security headers ----------
 CSP = "; ".join([
     "default-src 'self'",
-    "script-src 'self' https://www.instagram.com https://link.msgsndr.com",
+    "script-src 'self' https://www.instagram.com https://link.msgsndr.com https://www.statcounter.com https://secure.statcounter.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' data: https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://www.instagram.com",
+    "connect-src 'self' https://www.instagram.com https://*.statcounter.com",
     "frame-src https://api.leadconnectorhq.com https://*.leadconnectorhq.com https://link.msgsndr.com https://www.instagram.com",
     "media-src 'self' https:",
     "object-src 'none'",

@@ -31,8 +31,20 @@
       document.body.appendChild(s);
     });
   }
+  // Statcounter analytics (project 12926299), loaded only after "Accept all"
+  function loadStats() {
+    if (window.__mhStats) return;
+    window.__mhStats = true;
+    window.sc_project = 12926299;
+    window.sc_invisible = 1;
+    window.sc_security = '7b72fe22';
+    var s = document.createElement('script');
+    s.src = 'https://www.statcounter.com/counter/counter.js';
+    s.async = true;
+    document.body.appendChild(s);
+  }
   function apply(v) {
-    if (v === 'all') loadEmbeds();
+    if (v === 'all') { loadEmbeds(); loadStats(); }
     if (banner) banner.hidden = true;
     document.body.classList.remove('has-cookie-banner');
   }

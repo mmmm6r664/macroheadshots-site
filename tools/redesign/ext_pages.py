@@ -85,7 +85,7 @@ SERVICE_INFO = {
     desc="Company team headshots in NJ: we photograph your whole team on location or at our Totowa studio, with consistent results and 24-hour delivery.",
     h1="Company team headshots in New Jersey", stype="Corporate team headshot photography",
     lead="For teams of 10 or more within 30 miles of Totowa, we bring our studio equipment to your office. Smaller teams visit our studio. Retouched within 24 hours.",
-    photos=["headshot-34a", "headshot-01b", "headshot-10b", "headshot-30c", "headshot-34b", "headshot-20c"],
+    photos=["headshot-34a", "headshot-01b", "headshot-10b", "headshot-30c", "headshot-10a", "headshot-20c"],
     who=["Companies refreshing their website and directory", "Law firms, medical practices and agencies", "Real estate brokerages", "Teams onboarding new staff"],
     inc=["Matching lighting, framing and background for everyone", "On-location setup for 10+ employees within 30 miles", "Each person picks their favorite image", "Retouched files within 24 hours"],
     guides=["on-location-company-headshots", "what-to-wear-corporate-headshot"],
