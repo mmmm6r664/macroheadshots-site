@@ -43,7 +43,7 @@ IMG = {
     "perk_backdrops": asset("66febe60b27ab0e9b1cb2ea4", "icon-backdrops"),
 }
 GAL_DIR = os.path.join(HERE, "..", "gallery")
-GALLERY = [g for g in json.load(open(os.path.join(GAL_DIR, "manifest.json"))) if g[0] not in ("headshot-34b.webp", "headshot-34c.webp")]  # removed at owner request
+GALLERY = [g for g in json.load(open(os.path.join(GAL_DIR, "manifest.json"))) if g[0] not in ("headshot-34b.webp", "headshot-34c.webp", "headshot-26a.webp", "headshot-26c.webp", "headshot-21b.webp", "headshot-21c.webp")]  # removed at owner request
 os.makedirs(f"{OUT}/assets/gallery", exist_ok=True)
 for _n, *_ in GALLERY:
     shutil.copy(os.path.join(GAL_DIR, _n), f"{OUT}/assets/gallery/{_n}")

@@ -41,7 +41,7 @@ SERVICE_INFO = {
     desc="Acting headshots in NJ that look like you: varied expressions, multiple looks and light, natural retouching. Totowa studio near NYC.",
     h1="Acting headshots in New Jersey", stype="Actor headshot photography",
     lead="Headshots that show casting directors exactly who will walk into the room, with varied expressions, multiple looks and light, natural retouching.",
-    photos=["headshot-26b", "headshot-13a", "headshot-27a", "headshot-06a", "headshot-14c", "headshot-26c"],
+    photos=["headshot-26b", "headshot-13a", "headshot-27a", "headshot-06a", "headshot-14c", "headshot-18a"],
     who=["Actors building or refreshing their book", "Models and performers", "Students applying to drama programs", "Voice actors and hosts who need a face for their profile"],
     inc=["Time for several looks in 30- or 60-minute sessions", "Direction for range: commercial and theatrical expressions", "Light retouching that stays true to life", "Digital files ready for casting sites"],
     guides=["acting-vs-corporate-headshots", "headshot-cost-new-jersey"],
