@@ -449,8 +449,16 @@ def strengths(about):
 def gallery():
     alt = {"studio": "Studio headshot", "location": "On-location headshot", "medical": "Medical professional headshot"}
     fig = lambda x: f'<figure><img src="/assets/gallery/{x[0]}" alt="{alt[x[3]]} by Macro Headshots" width="{x[1]}" height="{x[2]}" loading="lazy" decoding="async"></figure>'
-    row1 = [x for x in GALLERY if x[0][-6] == "a"]
-    row2 = [x for x in GALLERY if x[0][-6] != "a"]
+    new = [x for x in GALLERY if int(x[0][9:11]) >= 40]
+    old1 = [x for x in GALLERY if x not in new and x[0][-6] == "a"]
+    old2 = [x for x in GALLERY if x not in new and x[0][-6] != "a"]
+    def mix(old, add):
+        out = []
+        for i, x in enumerate(old):
+            out.append(x)
+            if i % 3 == 1 and add: out.append(add.pop(0))
+        return out + add
+    row1 = mix(old1, new[0::2]); row2 = mix(old2, new[1::2])
     r1 = "".join(fig(x) for x in row1); r2 = "".join(fig(x) for x in row2)
     return f"""<section class="section soft" id="gallery">
   <div class="wrap">

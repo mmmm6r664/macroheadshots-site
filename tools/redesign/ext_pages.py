@@ -207,7 +207,13 @@ write("locations.html", head("Locations | Macro Headshots Studio in Totowa, NJ",
 cats = [("all", "All"), ("studio", "Studio"), ("location", "On location"), ("medical", "Medical")]
 chips = "".join(f'<button type="button" class="filter{" active" if k == "all" else ""}" data-filter="{k}">{t}</button>' for k, t in cats)
 alts = {"studio": "Studio headshot", "location": "On-location headshot", "medical": "Medical professional headshot"}
-ORDERED = sorted(GALLERY, key=lambda x: (x[0][-6], x[0]))
+_base = sorted([x for x in GALLERY if int(x[0][9:11]) < 40], key=lambda x: (x[0][-6], x[0]))
+_new = [x for x in GALLERY if int(x[0][9:11]) >= 40]
+ORDERED = []
+for _i, _x in enumerate(_base):
+    if _i % 3 == 0 and _new: ORDERED.append(_new.pop(0))
+    ORDERED.append(_x)
+ORDERED += _new
 items = "".join(f'<figure class="g-item" data-cat="{c}"><img src="/assets/gallery/{n}" alt="{alts[c]} by Macro Headshots" width="{w}" height="{h}" loading="lazy" decoding="async"></figure>' for n, w, h, c in ORDERED)
 pf_crumb = [("Home", "/"), ("Portfolio & Reviews", "/portfolio")]
 pf_ld = {"@context": "https://schema.org", "@type": "ImageGallery", "name": "Macro Headshots portfolio", "url": SITE + "/portfolio",
