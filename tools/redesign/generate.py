@@ -87,7 +87,7 @@ PHONE, PHONE_TEL = "877-622-4973", "tel:8776224973"
 ADDRESS = "195 US-46, Suite 9, Totowa, New Jersey 07512"
 MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Macro+Headshots+195+US-46+Totowa+NJ&query_place_id=ChIJBQf90R9ZwokR1-oGndIZRCA"
 FB, IG_URL = "https://www.facebook.com/MacroHeadshots", "https://instagram.com/macroheadshots"
-FORM_ID = "F39Doj60gH02JaLUfmFP"
+FORM_EMAIL = "info@macrosnaps.com"
 REVIEWS = [
     ("Courtney R.", "Great work! They get you in and out quickly and the turnaround for headshots was within 24 hours"),
     ("Vanessa B.", "First time getting professional headshots and I was nervous. The photographer was really helpful. Suggested some amazing poses. Quality Pictures at amazing price"),
@@ -281,7 +281,7 @@ def footer():
   </div>
 </footer>
 <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent" hidden>
-  <p><b>We use cookies</b> Essential cookies keep the site and booking form working. With your consent we also load our Instagram feed and Statcounter visitor statistics, which may set their own cookies. <a href="/cookie-policy">Read our cookie policy</a></p>
+  <p><b>We use cookies</b> Essential cookies remember your cookie choice. With your consent we also load our Instagram feed and Statcounter visitor statistics, which may set their own cookies. <a href="/cookie-policy">Read our cookie policy</a></p>
   <div class="cookie-actions"><button type="button" class="btn btn-outline btn-sm" data-consent="necessary">Necessary only</button><button type="button" class="btn btn-primary btn-sm" data-consent="all">Accept all</button></div>
 </div>
 <div class="mobile-bar"><a class="btn btn-outline" href="{PHONE_TEL}">Call</a><a class="btn btn-primary" href="/appointments">Book Now</a></div>
@@ -800,11 +800,36 @@ write("appointments.html", head(m["title"], m["desc"], "/appointments", [faq_ld(
 </section>
 <section class="section soft" id="book">
   <div class="wrap">
-    <div class="section-head head-split"><div><span class="eyebrow">Request a session</span><h2>Book your headshot session</h2></div><p class="lead">All fields are required. Pick the package you are interested in — you can always change it at the studio.</p></div>
+    <div class="section-head head-split"><div><span class="eyebrow">Request a session</span><h2>Book your headshot session</h2></div><p class="lead">Tell us your package and preferred date and we will confirm your session. You can always change the package at the studio.</p></div>
     <div class="book-grid">
       <div class="form-card">
-        <iframe src="https://api.leadconnectorhq.com/widget/form/{FORM_ID}" id="inline-{FORM_ID}" data-layout="{{'id':'INLINE'}}" data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="Appointments" data-height="1150" data-layout-iframe-id="inline-{FORM_ID}" data-form-id="{FORM_ID}" title="Appointment request form"></iframe>
-        <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+        <form class="bk-form" id="booking-form" action="https://formsubmit.co/{FORM_EMAIL}" method="POST" novalidate>
+          <input type="hidden" name="_subject" value="New booking request – macroheadshots.com">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_next" value="{SITE}/thank-you">
+          <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="bk-row">
+            <label>First name<input name="First name" required autocomplete="given-name"></label>
+            <label>Last name<input name="Last name" required autocomplete="family-name"></label>
+          </div>
+          <div class="bk-row">
+            <label>Email<input type="email" name="email" required autocomplete="email"></label>
+            <label>Phone<input type="tel" name="Phone" required autocomplete="tel" inputmode="tel"></label>
+          </div>
+          <div class="bk-row">
+            <label>Package<select name="Package" required><option value="">Choose a package</option><option>1 Headshot – $50</option><option>3 Headshots – $100</option><option>5 Headshots – $150</option><option>10 Headshots – $250</option><option>Team on-location (10+ people) – quote</option><option>Not sure yet</option></select></label>
+            <label>Type of headshot<select name="Headshot type" required><option value="">Choose one</option><option>Corporate / LinkedIn</option><option>Acting</option><option>Medical residency (ERAS)</option><option>Executive</option><option>Personal branding</option><option>Team / company</option><option>Other</option></select></label>
+          </div>
+          <div class="bk-row">
+            <label>Preferred date<input type="date" name="Preferred date" required></label>
+            <label>Preferred time<select name="Preferred time" required><option value="">Choose a time</option><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Flexible</option></select></label>
+          </div>
+          <label>Anything we should know? <span class="opt">(optional)</span><textarea name="Message" rows="4" placeholder="Number of looks, deadline, team size, questions…"></textarea></label>
+          <label class="bk-consent"><input type="checkbox" name="Consent" value="Yes" required><span>I agree that Macro Headshots may contact me by email, phone or text about my booking. See our <a href="/privacy-policy">Privacy Policy</a>.</span></label>
+          <button class="btn btn-primary bk-submit" type="submit">Send booking request</button>
+          <p class="bk-status" role="status" aria-live="polite"></p>
+        </form>
       </div>
       <aside class="side">
         <div class="contact-card">
@@ -840,6 +865,12 @@ def legal_page(slug, title, desc, h1, body):
 <section class="section soft" style="padding-top:56px"><div class="wrap"><article class="prose">{body}</article></div></section>
 """ + footer())
 
+write("thank-you.html", head("Thank You | Macro Headshots", "Your booking request was sent.", "/thank-you", [], robots="noindex,follow") + nav(None) + f"""
+<section class="page-hero">{BLOBS}<div class="wrap"><span class="eyebrow">{icon('check')} Request sent</span><h1>Thank you!</h1>
+<p class="lead">We received your booking request and will get back to you shortly to confirm your session. For anything urgent, call <a href="{PHONE_TEL}" style="color:var(--brand);font-weight:600">{PHONE}</a>.</p>
+<div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="/">Back to home</a><a class="btn btn-outline" href="/guides/what-to-wear-corporate-headshot">What to wear</a></div></div></section>
+""" + footer())
+
 legal_page("privacy-policy", "Privacy Policy | Macro Headshots", "How Macro Headshots collects, uses and protects your personal information when you visit our website or book a headshot session.", "Privacy Policy", f"""
 <p>This Privacy Policy explains how Macro Headshots ("we", "us", "our"), a professional headshot studio at {ADDRESS}, collects, uses and protects personal information when you visit this website, contact us or book a session.</p>
 <h2>Information we collect</h2>
@@ -861,7 +892,7 @@ legal_page("privacy-policy", "Privacy Policy | Macro Headshots", "How Macro Head
 <h2>Who we share information with</h2>
 <p>We share information only with service providers that help us run our business, and only as needed for the purposes above:</p>
 <ul>
-<li><b>HighLevel / LeadConnector</b>, which provides our appointment form and customer management system.</li>
+<li><b>FormSubmit</b> (formsubmit.co), which delivers booking form submissions to our email inbox.</li>
 <li><b>Vercel</b>, which hosts this website.</li>
 <li><b>Google Fonts</b>, which serves the fonts used on this site.</li>
 <li><b>Instagram (Meta)</b> and <b>Statcounter</b> (visitor statistics), which load only if you accept cookies.</li>
@@ -892,7 +923,6 @@ legal_page("cookie-policy", "Cookie Policy | Macro Headshots", "Which cookies an
 <thead><tr><th>Category</th><th>Provider</th><th>Purpose</th><th>When it is used</th></tr></thead>
 <tbody>
 <tr><td>Strictly necessary</td><td>Macro Headshots</td><td>Remembers your cookie choice (stored in your browser's local storage as <code>mh-consent</code>).</td><td>Always</td></tr>
-<tr><td>Strictly necessary</td><td>HighLevel / LeadConnector</td><td>Runs the appointment form so you can send a booking request.</td><td>When the booking form loads</td></tr>
 <tr><td>Third-party content</td><td>Instagram (Meta)</td><td>Displays our Instagram feed.</td><td>Only after you click "Accept all"</td></tr>
 <tr><td>Analytics</td><td><a href="https://statcounter.com/about/legal/#privacy" target="_blank" rel="noopener">Statcounter</a></td><td>Counts visits and shows which pages are popular, so we can improve the site.</td><td>Only after you click "Accept all"</td></tr>
 </tbody></table></div>
@@ -902,7 +932,7 @@ legal_page("cookie-policy", "Cookie Policy | Macro Headshots", "Which cookies an
 <p><button type="button" class="btn btn-primary btn-sm" data-cookie-settings>Open cookie settings</button></p>
 <p>You can also block or delete cookies in your browser settings. Blocking strictly necessary cookies may stop parts of the site, such as the booking form, from working.</p>
 <h2>Third-party policies</h2>
-<p>Third-party providers set and control their own cookies. Please see their privacy policies for details: <a href="https://www.gohighlevel.com/privacy-policy" target="_blank" rel="noopener">HighLevel</a> and <a href="https://privacycenter.instagram.com/policy" target="_blank" rel="noopener">Instagram</a>.</p>
+<p>Third-party providers set and control their own cookies. Please see their privacy policies for details: <a href="https://privacycenter.instagram.com/policy" target="_blank" rel="noopener">Instagram</a> and <a href="https://statcounter.com/about/legal/#privacy" target="_blank" rel="noopener">Statcounter</a>.</p>
 <h2>Contact us</h2>
 <p>Questions about this policy? Call us at <a href="{PHONE_TEL}">{PHONE}</a>.</p>
 """)
@@ -942,16 +972,16 @@ open(f"{OUT}/robots.txt", "w").write(f"User-agent: *\nAllow: /\n\nSitemap: {SITE
 # ---------- vercel config with security headers ----------
 CSP = "; ".join([
     "default-src 'self'",
-    "script-src 'self' https://www.instagram.com https://link.msgsndr.com https://www.statcounter.com https://secure.statcounter.com",
+    "script-src 'self' https://www.instagram.com https://www.statcounter.com https://secure.statcounter.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' data: https://fonts.gstatic.com",
     "img-src 'self' data: blob: https:",
-    "connect-src 'self' https://www.instagram.com https://*.statcounter.com",
-    "frame-src https://api.leadconnectorhq.com https://*.leadconnectorhq.com https://link.msgsndr.com https://www.instagram.com",
+    "connect-src 'self' https://www.instagram.com https://*.statcounter.com https://formsubmit.co",
+    "frame-src https://www.instagram.com",
     "media-src 'self' https:",
     "object-src 'none'",
     "base-uri 'self'",
-    "form-action 'self'",
+    "form-action 'self' https://formsubmit.co",
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
 ])

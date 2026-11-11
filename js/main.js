@@ -125,3 +125,39 @@
     io.observe(el);
   });
 })();
+
+// ----- booking form: send by email (FormSubmit) without leaving the page -----
+(function () {
+  var f = document.getElementById('booking-form');
+  if (!f || !window.fetch) return;
+  var status = f.querySelector('.bk-status'), btn = f.querySelector('.bk-submit');
+  var d = f.querySelector('input[type=date]');
+  if (d) { var t = new Date(); d.min = t.toISOString().slice(0, 10); }
+  f.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (f._honey && f._honey.value) return;
+    if (!f.checkValidity()) {
+      f.classList.add('tried');
+      var bad = f.querySelector(':invalid'); if (bad) bad.focus();
+      status.textContent = 'Please fill in the highlighted fields.'; status.className = 'bk-status err';
+      return;
+    }
+    btn.disabled = true; btn.textContent = 'Sending…'; status.textContent = ''; status.className = 'bk-status';
+    var data = {};
+    new FormData(f).forEach(function (v, k) { if (k !== '_next' && k !== '_honey') data[k] = v; });
+    data._replyto = data.email;
+    data['Sent from'] = location.href;
+    fetch(f.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data)
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (res.ok && String(res.j.success) === 'true') { location.href = '/thank-you'; return; }
+        throw new Error(res.j && res.j.message || 'send failed');
+      })
+      .catch(function () {
+        btn.disabled = false; btn.textContent = 'Send booking request';
+        status.innerHTML = 'Sorry, that did not go through. Please try again or call <a href="tel:8776224973">877-622-4973</a>.';
+        status.className = 'bk-status err';
+      });
+  });
+})();
