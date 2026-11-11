@@ -47,6 +47,22 @@ GALLERY = [g for g in json.load(open(os.path.join(GAL_DIR, "manifest.json"))) if
 os.makedirs(f"{OUT}/assets/gallery", exist_ok=True)
 for _n, *_ in GALLERY:
     shutil.copy(os.path.join(GAL_DIR, _n), f"{OUT}/assets/gallery/{_n}")
+# small thumbnails for the scrolling gallery rows + an average colour placeholder per photo
+from PIL import Image as _GI
+os.makedirs(f"{OUT}/assets/gallery/t", exist_ok=True)
+GCOLOR = {}
+for _g in GALLERY:
+    _im = _GI.open(os.path.join(GAL_DIR, _g[0])).convert("RGB")
+    _c = _im.resize((1, 1), _GI.LANCZOS).getpixel((0, 0)); GCOLOR[_g[0]] = "#%02x%02x%02x" % _c
+    _t = _im.copy(); _t.thumbnail((400, 600)); _t.save(f"{OUT}/assets/gallery/t/{_g[0]}", quality=72, method=6)
+# small thumbnails for the scrolling gallery rows + an average colour placeholder per photo
+from PIL import Image as _GI
+os.makedirs(f"{OUT}/assets/gallery/t", exist_ok=True)
+GCOLOR = {}
+for _g in GALLERY:
+    _im = _GI.open(os.path.join(GAL_DIR, _g[0])).convert("RGB")
+    _c = _im.resize((1, 1), _GI.LANCZOS).getpixel((0, 0)); GCOLOR[_g[0]] = "#%02x%02x%02x" % _c
+    _t = _im.copy(); _t.thumbnail((400, 600)); _t.save(f"{OUT}/assets/gallery/t/{_g[0]}", quality=72, method=6)
 IG_DIR = os.path.join(HERE, "..", "instagram")
 IG = []
 for f in sorted(os.listdir(IG_DIR)):
@@ -448,7 +464,7 @@ def strengths(about):
 
 def gallery():
     alt = {"studio": "Studio headshot", "location": "On-location headshot", "medical": "Medical professional headshot"}
-    fig = lambda x: f'<figure><img src="/assets/gallery/{x[0]}" alt="{alt[x[3]]} by Macro Headshots" width="{x[1]}" height="{x[2]}" loading="lazy" decoding="async"></figure>'
+    fig = lambda x: f'<figure style="background:{GCOLOR[x[0]]}"><img src="/assets/gallery/t/{x[0]}" alt="{alt[x[3]]} by Macro Headshots" width="400" height="600" decoding="async" fetchpriority="low"></figure>'
     new = [x for x in GALLERY if int(x[0][9:11]) >= 40]
     old1 = [x for x in GALLERY if x not in new and x[0][-6] == "a"]
     old2 = [x for x in GALLERY if x not in new and x[0][-6] != "a"]

@@ -128,7 +128,7 @@ for slug, name in SERVICES:
     S = SERVICE_INFO[slug]
     path = f"/{slug}/"
     hero_imgs = "".join(gimg(k, f"{name} by Macro Headshots", "tall" if i == 0 else "") for i, k in enumerate(S["photos"][:3]))
-    more = "".join(f'<figure>{gimg(k, f"{name} example by Macro Headshots")}</figure>' for k in S["photos"][3:])
+    more = "".join(f'<figure style="background:{GCOLOR[GAL[k][0]]}">{gimg(k, f"{name} example by Macro Headshots")}</figure>' for k in S["photos"][3:])
     svc_ld = {"@context": "https://schema.org", "@type": "Service", "@id": SITE + path + "#service", "name": name,
               "serviceType": S["stype"], "description": S["desc"], "url": SITE + path,
               "provider": {"@id": SITE + "/#business"}, "areaServed": AREA,
@@ -214,7 +214,7 @@ for _i, _x in enumerate(_base):
     if _i % 3 == 0 and _new: ORDERED.append(_new.pop(0))
     ORDERED.append(_x)
 ORDERED += _new
-items = "".join(f'<figure class="g-item" data-cat="{c}"><img src="/assets/gallery/{n}" alt="{alts[c]} by Macro Headshots" width="{w}" height="{h}" loading="lazy" decoding="async"></figure>' for n, w, h, c in ORDERED)
+items = "".join(f'<figure class="g-item" data-cat="{c}" style="background:{GCOLOR[n]}"><img src="/assets/gallery/{n}" alt="{alts[c]} by Macro Headshots" width="{w}" height="{h}" loading="lazy" decoding="async"></figure>' for n, w, h, c in ORDERED)
 pf_crumb = [("Home", "/"), ("Portfolio & Reviews", "/portfolio")]
 pf_ld = {"@context": "https://schema.org", "@type": "ImageGallery", "name": "Macro Headshots portfolio", "url": SITE + "/portfolio",
          "image": [SITE + f"/assets/gallery/{x[0]}" for x in ORDERED[:20]]}
