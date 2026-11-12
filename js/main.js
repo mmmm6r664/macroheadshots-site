@@ -154,9 +154,18 @@
         if (res.ok && String(res.j.success) === 'true') { location.href = '/thank-you'; return; }
         throw new Error(res.j && res.j.message || 'send failed');
       })
-      .catch(function () {
+      .catch(function (err) {
+        // Quick send failed (e.g. form not yet activated, network or blocker): fall back to a normal
+        // form post so the request still reaches FormSubmit, which shows its own confirmation page.
+        if (window.console) console.warn('Booking form quick send failed:', err && err.message);
+        if (!f._fellBack) {
+          f._fellBack = true;
+          status.textContent = 'Sending…'; status.className = 'bk-status';
+          HTMLFormElement.prototype.submit.call(f);
+          return;
+        }
         btn.disabled = false; btn.textContent = 'Send booking request';
-        status.innerHTML = 'Sorry, that did not go through. Please try again or call <a href="tel:8776224973">877-622-4973</a>.';
+        status.innerHTML = 'Sorry, that did not go through. Please call <a href="tel:8776224973">877-622-4973</a> or email <a href="mailto:info@macrosnaps.com">info@macrosnaps.com</a>.';
         status.className = 'bk-status err';
       });
   });
